@@ -9,7 +9,7 @@ export const AdminLoginPage: React.FC = () => {
   const { loginAsAdmin } = useAuth();
   const { addToast } = useNotification();
 
-  const [email, setEmail] = useState('admin@gfgkare.in');
+  const [email, setEmail] = useState('arunalavanuru1@gmail.com');
   const [password, setPassword] = useState('admin123');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);

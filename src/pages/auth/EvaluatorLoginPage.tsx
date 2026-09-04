@@ -9,7 +9,7 @@ export const EvaluatorLoginPage: React.FC = () => {
   const { loginAsEvaluator } = useAuth();
   const { addToast } = useNotification();
 
-  const [email, setEmail] = useState('raman@gfgkare.in');
+  const [email, setEmail] = useState('evaulator1@gmial.com');
   const [password, setPassword] = useState('jury123');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
