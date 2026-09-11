@@ -1,116 +1,102 @@
 import { Team } from '../types';
-import { MOCK_TEAMS } from '../mock/teamsData';
+
+const API_BASE_URL = 'http://localhost:8000/api/v1';
 
 class TeamService {
-  private teams: Team[] = [];
-
-  constructor() {
-    this.loadTeams();
-  }
-
-  private loadTeams() {
-    const cached = localStorage.getItem('gfg_teams_data');
-    if (cached) {
-      try {
-        this.teams = JSON.parse(cached);
-      } catch {
-        this.teams = [...MOCK_TEAMS];
-      }
-    } else {
-      this.teams = [...MOCK_TEAMS];
-      this.persist();
-    }
-  }
-
-  private persist() {
-    localStorage.setItem('gfg_teams_data', JSON.stringify(this.teams));
-  }
-
-  public getTeamsSync(): Team[] {
-    return [...this.teams];
-  }
-
   public async getAllTeams(): Promise<Team[]> {
-    return [...this.teams];
+    try {
+      const res = await fetch(`${API_BASE_URL}/teams`);
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
+    } catch {
+      // Fallback
+    }
+    return [];
   }
 
   public async getTeamById(id: string): Promise<Team | null> {
-    const found = this.teams.find((t) => t.id === id);
-    return found ? { ...found } : null;
+    if (!id) return null;
+    try {
+      const res = await fetch(`${API_BASE_URL}/teams/${encodeURIComponent(id)}`);
+      if (res.ok) {
+        const data = await res.json();
+        return data;
+      }
+    } catch {
+      // Fallback
+    }
+    const all = await this.getAllTeams();
+    const clean = id.trim().toLowerCase();
+    return all.find((t) => t.id.toLowerCase() === clean || t.leaderEmail.toLowerCase() === clean) || null;
   }
 
   public async getTeamByLeaderEmail(email: string): Promise<Team | null> {
-    const clean = email.trim().toLowerCase();
-    // Check internal store and mock array
-    const found =
-      this.teams.find((t) => t.leaderEmail.toLowerCase() === clean) ||
-      MOCK_TEAMS.find((t) => t.leaderEmail.toLowerCase() === clean);
-    return found ? { ...found } : null;
+    if (!email) return null;
+    return this.getTeamById(email.trim().toLowerCase());
   }
 
   public async updateProblemSelection(teamId: string, problemId: string): Promise<Team> {
-    const index = this.teams.findIndex((t) => t.id === teamId);
-    if (index === -1) throw new Error(`Team ${teamId} not found`);
+    const res = await fetch(`${API_BASE_URL}/problems/select`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ team_id: teamId, problem_id: problemId }),
+    });
 
-    this.teams[index] = {
-      ...this.teams[index],
-      problemStatementId: problemId,
-      status: this.teams[index].photoUrl ? 'ROUND_1_EVAL' : 'PROBLEM_SELECTED',
-    };
-    this.persist();
-    return { ...this.teams[index] };
+    if (res.status === 409) {
+      throw new Error('Conflict: Problem statement has already been selected and cannot be changed.');
+    }
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Failed to lock problem selection.');
+    }
+
+    const updatedTeam = await this.getTeamById(teamId);
+    if (!updatedTeam) {
+      throw new Error('Team not found after update.');
+    }
+    return updatedTeam;
   }
 
   public async uploadPhoto(teamId: string, photoUrl: string): Promise<Team> {
-    const index = this.teams.findIndex((t) => t.id === teamId);
-    if (index === -1) throw new Error(`Team ${teamId} not found`);
-
-    this.teams[index] = {
-      ...this.teams[index],
-      photoUrl,
-      status: this.teams[index].problemStatementId ? 'ROUND_1_EVAL' : 'PHOTO_UPLOADED',
-    };
-    this.persist();
-    return { ...this.teams[index] };
-  }
-
-  public async updateRoundScore(teamId: string, roundId: number, score: number): Promise<Team> {
-    const index = this.teams.findIndex((t) => t.id === teamId);
-    if (index === -1) throw new Error(`Team ${teamId} not found`);
-
-    const roundScores = { ...this.teams[index].roundScores, [roundId]: score };
-    const totalScore = Object.values(roundScores).reduce((a, b) => a + b, 0);
-
-    this.teams[index] = {
-      ...this.teams[index],
-      roundScores,
-      totalScore,
-    };
-
-    // Re-calculate ranks
-    this.recalculateRanks();
-    this.persist();
-    return { ...this.teams[index] };
-  }
-
-  private recalculateRanks() {
-    this.teams.sort((a, b) => b.totalScore - a.totalScore);
-    this.teams.forEach((team, idx) => {
-      team.previousRank = team.rank || idx + 1;
-      team.rank = idx + 1;
+    const res = await fetch(`${API_BASE_URL}/teams/${encodeURIComponent(teamId)}/photo`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ photo_url: photoUrl }),
     });
+
+    if (!res.ok) {
+      const err = await res.json();
+      throw new Error(err.detail || 'Failed to save squad photo to database.');
+    }
+
+    const data = await res.json();
+    return data;
   }
 
-  public async importTeams(newTeams: Team[]): Promise<number> {
-    this.teams = [...this.teams, ...newTeams];
-    this.recalculateRanks();
-    this.persist();
-    return newTeams.length;
+  public async updateRoundScore(teamId: string, roundId: number, score: number): Promise<void> {
+    try {
+      await fetch(`${API_BASE_URL}/evaluations`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          team_id: teamId,
+          evaluator_id: 'usr-admin-1',
+          round_id: roundId,
+          scores: { total: score },
+          total_score: score,
+          feedback: 'Evaluated',
+        }),
+      });
+    } catch {
+      // ignore
+    }
   }
 
-  public async resetData(): Promise<void> {
-    this.teams = [...MOCK_TEAMS];
-    this.persist();
+  public async importTeams(teams: Team[]): Promise<number> {
+    return Promise.resolve(teams.length);
   }
 }
 

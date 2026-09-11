@@ -2,15 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
-import { Award, Mail, Lock, ArrowRight, ChevronLeft, AlertTriangle } from 'lucide-react';
+import { LoginGfgBackground } from '../../components/common/LoginGfgBackground';
+import { Award, Mail, Lock, ArrowRight, AlertTriangle } from 'lucide-react';
 
 export const EvaluatorLoginPage: React.FC = () => {
   const navigate = useNavigate();
   const { loginAsEvaluator } = useAuth();
   const { addToast } = useNotification();
 
-  const [email, setEmail] = useState('evaulator1@gmial.com');
-  const [password, setPassword] = useState('jury123');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -32,70 +33,63 @@ export const EvaluatorLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#070a08] text-gray-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8">
-      <div className="max-w-md w-full mx-auto text-left">
-        <button
-          onClick={() => navigate('/login')}
-          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white font-mono transition-colors cursor-pointer mb-6"
-        >
-          <ChevronLeft className="w-4 h-4" />
-          <span>Back to Portal Selection</span>
-        </button>
-
-        <div className="bg-[#0b120e] border border-[#1b2b20] rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/80">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#142117]">
+    <div className="min-h-screen bg-[#FAF8FA] text-[#1E1920] flex flex-col justify-between p-4 sm:p-6 lg:p-8 cyber-grid relative overflow-hidden">
+      <LoginGfgBackground />
+      <div className="relative z-10 max-w-md w-full mx-auto text-left my-auto">
+        <div className="bg-white border border-[#F3E8FF] rounded-2xl p-6 sm:p-8 shadow-xl shadow-amber-500/5">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-100">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-[#1c1811] border border-[#2e261c] text-amber-400">
+              <div className="p-3 rounded-xl bg-amber-50 text-amber-600 border border-amber-200">
                 <Award className="w-6 h-6" />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-white">Evaluator Portal</h1>
-                <p className="text-xs text-gray-400">Jury & Faculty Assessment Panel</p>
+                <h1 className="text-xl font-bold text-gray-900">Evaluator Portal</h1>
+                <p className="text-xs text-gray-500">Jury & Faculty Assessment Panel</p>
               </div>
             </div>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-500/40 text-amber-400 bg-amber-500/10">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300 text-amber-700 bg-amber-50">
               EVALUATOR
             </span>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
                 Evaluator / Jury Email
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-gray-500 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="evaluator@gfgkare.in"
-                  className="w-full bg-[#070a08] border border-[#18261d] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 font-mono"
+                  className="w-full bg-[#FAF8FA] border border-amber-200 rounded-xl pl-9 pr-3 py-2.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
                 Jury Security Passcode
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gray-500 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="••••••••••••"
-                  className="w-full bg-[#070a08] border border-[#18261d] rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-amber-400 font-mono"
+                  placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
+                  className="w-full bg-[#FAF8FA] border border-amber-200 rounded-xl pl-9 pr-3 py-2.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 font-mono"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-xs text-red-400 flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
+              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
                 <span>{error}</span>
               </div>
             )}
@@ -103,7 +97,7 @@ export const EvaluatorLoginPage: React.FC = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              className="w-full mt-2 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50"
             >
               {isSubmitting ? (
                 <span>Authenticating Jury...</span>
@@ -116,21 +110,20 @@ export const EvaluatorLoginPage: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-6 pt-4 border-t border-[#142117] text-[11px] font-mono text-gray-400 space-y-1.5">
-            <span className="text-amber-400 font-semibold block">Demo Jury Account:</span>
+          <div className="mt-5 pt-4 border-t border-amber-100 text-center">
             <button
               type="button"
-              onClick={() => setEmail('raman@gfgkare.in')}
-              className="px-2.5 py-1 rounded bg-[#070a08] border border-[#142117] hover:border-amber-400 text-gray-300 hover:text-white cursor-pointer"
+              onClick={() => navigate('/login/admin')}
+              className="text-xs text-amber-700 hover:underline font-semibold"
             >
-              raman@gfgkare.in (Dr. Sundararajan Raman)
+              Switch to Administrator Console Login Ã¢â€ â€™
             </button>
           </div>
         </div>
       </div>
 
       <footer className="text-xs text-gray-500 font-mono text-center pt-4">
-        © 2026 Euphoria Hackathon Platform • Evaluator Assessment Desk
+        Ã‚Â© 2026 Euphoria Hackathon Platform Ã¢â‚¬Â¢ Evaluator Assessment Desk
       </footer>
     </div>
   );

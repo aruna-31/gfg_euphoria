@@ -17,35 +17,7 @@ interface NotificationContextType {
   removeToast: (id: string) => void;
 }
 
-const INITIAL_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: 'n-1',
-    title: 'Round 2 Evaluation Window Open',
-    message: 'Mid-evaluation checkpoint has officially commenced. Please keep your prototype demos ready.',
-    type: 'ALERT',
-    timestamp: '10m ago',
-    read: false,
-    link: '/team/status',
-  },
-  {
-    id: 'n-2',
-    title: 'Group Photo Verification Required',
-    message: 'Please ensure your official team group photo is uploaded before Round 2 scoring concludes.',
-    type: 'WARNING',
-    timestamp: '35m ago',
-    read: false,
-    link: '/team/upload-photo',
-  },
-  {
-    id: 'n-3',
-    title: 'Live Leaderboard Updated',
-    message: 'Evaluations for 8 teams in Track AI/ML have been published to the live podium.',
-    type: 'SUCCESS',
-    timestamp: '1h ago',
-    read: true,
-    link: '/team/leaderboard',
-  },
-];
+const INITIAL_NOTIFICATIONS: NotificationItem[] = [];
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 130" role="img" aria-label="GeeksforGeeks">
+  <g fill="#2F8D46" font-family="Arial, Helvetica, sans-serif" font-weight="800" font-size="84">
+    <text x="120" y="76" text-anchor="middle" transform="scale(-1 1) translate(-240 0)">G</text>
+    <text x="170" y="76" text-anchor="middle">G</text>
+  </g>
+  <rect x="101" y="43" width="97" height="15" rx="7.5" fill="#2F8D46"/>
+  <text x="150" y="116" text-anchor="middle" fill="#1d2026" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700">GeeksforGeeks</text>
+</svg>

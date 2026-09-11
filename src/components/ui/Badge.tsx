@@ -1,7 +1,7 @@
 import React from 'react';
 
 export interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'green' | 'amber' | 'blue' | 'purple' | 'red' | 'gray' | 'gold' | 'silver' | 'bronze';
+  variant?: 'green' | 'amber' | 'blue' | 'purple' | 'red' | 'gray' | 'gold' | 'silver' | 'bronze' | 'pink';
   size?: 'sm' | 'md';
 }
 
@@ -13,20 +13,21 @@ export const Badge: React.FC<BadgeProps> = ({
   ...props
 }) => {
   const sizeStyles = {
-    sm: 'text-[11px] px-2 py-0.5 font-medium tracking-wide',
-    md: 'text-xs px-2.5 py-1 font-semibold tracking-wide',
+    sm: 'text-[11px] px-2 py-0.5 font-bold tracking-wide',
+    md: 'text-xs px-2.5 py-1 font-bold tracking-wide',
   };
 
   const variantStyles = {
-    green: 'bg-[#00b259]/15 text-[#00e575] border border-[#00b259]/30',
-    amber: 'bg-amber-500/15 text-amber-300 border border-amber-500/30',
-    blue: 'bg-sky-500/15 text-sky-300 border border-sky-500/30',
-    purple: 'bg-purple-500/15 text-purple-300 border border-purple-500/30',
-    red: 'bg-red-500/15 text-red-300 border border-red-500/30',
-    gray: 'bg-gray-800 text-gray-300 border border-gray-700',
-    gold: 'bg-amber-500/20 text-amber-200 border border-amber-400/50 shadow-sm shadow-amber-500/20',
-    silver: 'bg-slate-500/20 text-slate-200 border border-slate-400/50',
-    bronze: 'bg-orange-600/20 text-orange-200 border border-orange-500/50',
+    pink: 'bg-pink-100 text-pink-700 border border-pink-300',
+    green: 'bg-emerald-100 text-emerald-800 border border-emerald-300',
+    amber: 'bg-amber-100 text-amber-800 border border-amber-300',
+    blue: 'bg-sky-100 text-sky-800 border border-sky-300',
+    purple: 'bg-purple-100 text-purple-800 border border-purple-300',
+    red: 'bg-rose-100 text-rose-800 border border-rose-300',
+    gray: 'bg-gray-100 text-gray-700 border border-gray-300',
+    gold: 'bg-amber-100 text-amber-900 border border-amber-400 shadow-sm shadow-amber-500/10',
+    silver: 'bg-slate-100 text-slate-800 border border-slate-300',
+    bronze: 'bg-orange-100 text-orange-800 border border-orange-300',
   };
 
   return (

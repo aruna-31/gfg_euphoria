@@ -47,7 +47,7 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm"
           />
 
           {/* Dialog */}
@@ -56,26 +56,26 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 15 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className={`relative w-full ${maxWidthClasses[maxWidth]} bg-[#0f1612] border border-[#223528] rounded-2xl shadow-2xl shadow-black/80 p-6 z-10 text-left overflow-hidden`}
+            className={`relative w-full ${maxWidthClasses[maxWidth]} bg-white border border-[#F3E8FF] rounded-2xl shadow-2xl shadow-pink-500/10 p-6 z-10 text-left overflow-hidden`}
           >
-            {/* Ambient accent top line */}
-            <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-[#00b259] to-transparent" />
-
-            <div className="flex items-start justify-between mb-4">
-              <div>
-                {title && <h3 className="text-lg font-bold text-gray-100">{title}</h3>}
-                {description && <p className="text-xs text-gray-400 mt-1">{description}</p>}
+            {/* Header */}
+            {(title || description) && (
+              <div className="mb-4 pr-8 border-b border-pink-100 pb-3">
+                {title && <h3 className="text-lg font-bold text-gray-900">{title}</h3>}
+                {description && <p className="text-xs text-gray-500 mt-0.5">{description}</p>}
               </div>
-              <button
-                onClick={onClose}
-                className="text-gray-400 hover:text-white p-1 rounded-lg hover:bg-[#1a261f] transition-colors"
-                aria-label="Close modal"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            )}
 
-            <div className="mt-2 max-h-[75vh] overflow-y-auto pr-1">{children}</div>
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-pink-600 hover:bg-pink-50 transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            {/* Body */}
+            <div>{children}</div>
           </motion.div>
         </div>
       )}

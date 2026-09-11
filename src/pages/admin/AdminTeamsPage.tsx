@@ -60,39 +60,39 @@ export const AdminTeamsPage: React.FC = () => {
   return (
     <div className="space-y-6 text-left">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-[#1b2b20] pb-5">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-pink-200 pb-5">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-extrabold text-white">Teams Directory & Registry</h1>
-            <Badge variant="green" size="sm">
+            <h1 className="text-2xl font-black text-gray-900">Teams Directory & Registry</h1>
+            <Badge variant="pink" size="sm">
               {teams.length} REGISTERED TEAMS
             </Badge>
           </div>
-          <p className="text-xs text-gray-400 mt-1">
-            Browse all verified teams, evaluate status, inspection drawer, and college affiliations.
+          <p className="text-xs text-gray-600 mt-1">
+            Browse all verified teams, problem statement allocations, squad photos, and scoring progress.
           </p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#0a0f0c] p-3 rounded-xl border border-[#1b2b20]">
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-white p-3 rounded-xl border border-pink-200 shadow-sm">
         <div className="relative w-full sm:w-72">
-          <Search className="w-4 h-4 text-gray-500 absolute left-3 top-2.5" />
+          <Search className="w-4 h-4 text-gray-400 absolute left-3 top-2.5" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by team name, ID, or leader..."
-            className="w-full bg-[#080d0a] border border-[#1b2b20] rounded-lg pl-9 pr-3 py-2 text-xs text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#00b259]"
+            className="w-full bg-[#FAF8FA] border border-pink-200 rounded-lg pl-9 pr-3 py-2 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-pink-500 font-mono"
           />
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto">
-          <span className="text-xs font-mono text-gray-400">College:</span>
+          <span className="text-xs font-mono text-gray-500">College:</span>
           <select
             value={collegeFilter}
             onChange={(e) => setCollegeFilter(e.target.value)}
-            className="bg-[#080d0a] border border-[#1b2b20] rounded-lg px-3 py-2 text-xs text-gray-300 focus:outline-none focus:border-[#00b259]"
+            className="bg-[#FAF8FA] border border-pink-200 rounded-lg px-3 py-2 text-xs text-gray-800 focus:outline-none focus:border-pink-500"
           >
             {colleges.map((col) => (
               <option key={col} value={col}>
@@ -104,67 +104,75 @@ export const AdminTeamsPage: React.FC = () => {
       </div>
 
       {/* Teams Data Table */}
-      <div className="bg-[#090e0b] border border-[#1a2b20] rounded-2xl overflow-hidden shadow-2xl">
+      <div className="bg-white border border-pink-200 rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse text-xs">
-            <thead className="bg-[#070b09] border-b border-[#17251c] text-[11px] font-mono text-gray-400 uppercase">
+            <thead className="bg-[#FAF8FA] border-b border-pink-200 text-[11px] font-mono text-gray-600 uppercase">
               <tr>
-                <th className="py-3 px-4">Team & College</th>
-                <th className="py-3 px-4 hidden md:table-cell">Leader & Email</th>
-                <th className="py-3 px-4 hidden sm:table-cell">Problem Track</th>
-                <th className="py-3 px-3 text-center">Score</th>
-                <th className="py-3 px-3 text-center">Status</th>
-                <th className="py-3 px-4 text-right">Actions</th>
+                <th className="py-3.5 px-4">Team & College</th>
+                <th className="py-3.5 px-4 hidden md:table-cell">Leader & Email</th>
+                <th className="py-3.5 px-4 hidden sm:table-cell">Selected Problem Statement</th>
+                <th className="py-3.5 px-3 text-center">Score</th>
+                <th className="py-3.5 px-3 text-center">Status</th>
+                <th className="py-3.5 px-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#132017]">
+            <tbody className="divide-y divide-pink-100">
               {filteredTeams.map((team) => (
-                <tr key={team.id} className="hover:bg-[#0e1611] transition-colors">
-                  <td className="py-3 px-4">
+                <tr key={team.id} className="hover:bg-pink-50/40 transition-colors">
+                  <td className="py-3.5 px-4">
                     <div className="flex items-center gap-3">
                       <Avatar src={team.photoUrl} name={team.name} size="sm" />
                       <div>
                         <div className="flex items-center gap-1.5">
-                          <span className="font-bold text-white">{team.name}</span>
-                          <Badge variant="green" size="sm">
+                          <span className="font-bold text-gray-900">{team.name}</span>
+                          <Badge variant="pink" size="sm">
                             {team.id}
                           </Badge>
                         </div>
-                        <span className="text-[11px] text-gray-400 truncate block">
+                        <span className="text-[11px] text-gray-500 truncate block">
                           {team.college}
                         </span>
                       </div>
                     </div>
                   </td>
 
-                  <td className="py-3 px-4 hidden md:table-cell">
-                    <span className="text-gray-200 block font-medium">{team.leaderName}</span>
-                    <span className="font-mono text-[11px] text-gray-400">{team.leaderEmail}</span>
+                  <td className="py-3.5 px-4 hidden md:table-cell">
+                    <span className="text-gray-900 block font-medium">{team.leaderName}</span>
+                    <span className="font-mono text-[11px] text-gray-500">{team.leaderEmail}</span>
                   </td>
 
-                  <td className="py-3 px-4 hidden sm:table-cell max-w-xs truncate text-gray-300">
-                    <span className="font-mono text-[10px] text-[#00e575] block">
-                      {team.problemStatementId || 'UNSELECTED'}
-                    </span>
-                    <span className="truncate">
-                      {team.problemStatementId ? problems.get(team.problemStatementId) : 'No problem selected'}
-                    </span>
+                  <td className="py-3.5 px-4 hidden sm:table-cell max-w-xs truncate text-gray-700">
+                    {team.problemStatementId ? (
+                      <div>
+                        <span className="font-mono font-bold text-[11px] text-pink-700 block">
+                          {team.problemStatementId}
+                        </span>
+                        <span className="truncate block text-gray-800 font-medium">
+                          {problems.get(team.problemStatementId) || 'Challenge Locked'}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="inline-block px-2 py-0.5 rounded bg-amber-50 text-amber-700 border border-amber-200 text-[10px] font-mono">
+                        NOT SELECTED
+                      </span>
+                    )}
                   </td>
 
-                  <td className="py-3 px-3 text-center font-mono font-bold text-[#00e575]">
+                  <td className="py-3.5 px-3 text-center font-mono font-black text-pink-600">
                     {team.totalScore}
                   </td>
 
-                  <td className="py-3 px-3 text-center">
-                    <Badge variant={team.photoUrl ? 'green' : 'amber'} size="sm">
-                      {team.status.replace('_', ' ')}
+                  <td className="py-3.5 px-3 text-center">
+                    <Badge variant={team.photoUrl ? 'pink' : 'amber'} size="sm">
+                      {team.status.replace(/_/g, ' ')}
                     </Badge>
                   </td>
 
-                  <td className="py-3 px-4 text-right">
+                  <td className="py-3.5 px-4 text-right">
                     <Button
                       size="sm"
-                      variant="secondary"
+                      variant="outline"
                       onClick={() => setSelectedTeam(team)}
                       leftIcon={<Eye className="w-3.5 h-3.5" />}
                     >
@@ -189,49 +197,49 @@ export const AdminTeamsPage: React.FC = () => {
         >
           <div className="space-y-4 text-left text-xs">
             {/* Header info */}
-            <div className="flex items-center gap-4 p-4 rounded-xl bg-[#080d0a] border border-[#1b2b20]">
+            <div className="flex items-center gap-4 p-4 rounded-xl bg-[#FAF8FA] border border-pink-200">
               <Avatar
                 src={selectedTeam.photoUrl}
                 name={selectedTeam.name}
                 size="xl"
-                className="ring-2 ring-[#00b259]/40"
+                className="ring-2 ring-pink-300"
               />
               <div className="min-w-0 flex-1">
-                <h3 className="text-base font-bold text-white">{selectedTeam.name}</h3>
-                <p className="text-xs text-gray-400">{selectedTeam.college}</p>
+                <h3 className="text-base font-bold text-gray-900">{selectedTeam.name}</h3>
+                <p className="text-xs text-gray-600">{selectedTeam.college}</p>
                 <div className="mt-2 flex flex-wrap gap-2 font-mono text-[11px]">
-                  <span className="text-[#00e575]">Rank #{selectedTeam.rank || '-'}</span>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-white">{selectedTeam.totalScore} Points</span>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-sky-400">Round 1: {selectedTeam.roundScores[1] || '—'}</span>
-                  <span className="text-gray-500">•</span>
-                  <span className="text-amber-400">Round 2: {selectedTeam.roundScores[2] || '—'}</span>
+                  <span className="text-pink-700 font-bold">Rank #{selectedTeam.rank || 1}</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-800 font-bold">{selectedTeam.totalScore} Points</span>
+                  <span className="text-gray-300">•</span>
+                  <span className="text-gray-600">Leader: {selectedTeam.leaderName}</span>
                 </div>
               </div>
             </div>
 
-            {/* Member Roster */}
+            {/* Member Roster (All 4 members) */}
             <div>
-              <h4 className="font-bold text-gray-200 text-xs uppercase tracking-wider font-mono mb-2">
-                Team Member Composition ({selectedTeam.members.length} Registered)
+              <h4 className="font-bold text-gray-900 text-xs uppercase tracking-wider font-mono mb-2">
+                Team Member Composition ({selectedTeam.members?.length || 4} Registered)
               </h4>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                {selectedTeam.members.map((m) => (
+                {selectedTeam.members?.map((m) => (
                   <div
                     key={m.id}
-                    className="p-3 bg-[#080d0a] rounded-xl border border-[#1b2b20] space-y-1"
+                    className="p-3 bg-[#FAF8FA] rounded-xl border border-pink-100 space-y-1"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-bold text-white truncate">{m.name}</span>
+                      <span className="font-bold text-gray-900 truncate">{m.name}</span>
                       {m.isLeader && (
-                        <span className="text-[10px] bg-amber-500/20 text-amber-300 px-1.5 py-0.5 rounded font-mono">
+                        <span className="text-[10px] bg-pink-100 text-pink-800 px-1.5 py-0.5 rounded font-mono font-bold border border-pink-200">
                           LEADER
                         </span>
                       )}
                     </div>
-                    <p className="text-[11px] font-mono text-gray-400 truncate">{m.email}</p>
-                    <p className="text-[10px] text-[#00e575]">{m.roleInTeam}</p>
+                    {m.isLeader && m.email && (
+                      <p className="text-[11px] font-mono text-gray-500 truncate">{m.email}</p>
+                    )}
+                    <p className="text-[10px] text-pink-700 font-medium">{m.roleInTeam}</p>
                   </div>
                 ))}
               </div>
@@ -239,23 +247,23 @@ export const AdminTeamsPage: React.FC = () => {
 
             {/* Problem Statement Details */}
             <div>
-              <h4 className="font-bold text-gray-200 text-xs uppercase tracking-wider font-mono mb-1.5">
-                Selected Challenge Track
+              <h4 className="font-bold text-gray-900 text-xs uppercase tracking-wider font-mono mb-1.5">
+                Selected Problem Statement
               </h4>
-              <div className="p-3 bg-[#080d0a] rounded-xl border border-[#1b2b20]">
-                <span className="text-[10px] font-mono text-[#00e575] block">
+              <div className="p-3 bg-[#FAF8FA] rounded-xl border border-pink-200">
+                <span className="text-[10px] font-mono font-bold text-pink-700 block">
                   {selectedTeam.problemStatementId || 'UNSELECTED'}
                 </span>
-                <p className="text-xs font-semibold text-white mt-0.5">
+                <p className="text-xs font-bold text-gray-900 mt-0.5">
                   {selectedTeam.problemStatementId
-                    ? problems.get(selectedTeam.problemStatementId)
-                    : 'Team has not locked a problem statement yet.'}
+                    ? problems.get(selectedTeam.problemStatementId) || 'Locked Challenge'
+                    : 'Team has not selected or locked a problem statement yet.'}
                 </p>
               </div>
             </div>
 
-            <div className="pt-3 border-t border-[#1b2b20] flex justify-end">
-              <Button variant="ghost" onClick={() => setSelectedTeam(null)}>
+            <div className="pt-3 border-t border-pink-100 flex justify-end">
+              <Button variant="outline" size="sm" onClick={() => setSelectedTeam(null)}>
                 Close Drawer
               </Button>
             </div>

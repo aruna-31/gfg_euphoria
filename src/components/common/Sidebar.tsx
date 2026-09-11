@@ -49,7 +49,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { to: '/team/problem-statement', label: 'Problem Statement', icon: <FileCode2 className="w-4 h-4" /> },
     { to: '/team/photo', label: 'Team Photo', icon: <Image className="w-4 h-4" /> },
     { to: '/team/round-status', label: 'Round Status', icon: <Clock className="w-4 h-4" /> },
-    { to: '/team/leaderboard', label: 'Leaderboard', icon: <Trophy className="w-4 h-4" /> },
     { to: '/team/profile', label: 'Team Profile', icon: <Users className="w-4 h-4" /> },
   ];
 
@@ -72,7 +71,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { to: '/admin/problems', label: 'Problem Statements', icon: <FileCode2 className="w-4 h-4" /> },
     { to: '/admin/rounds', label: 'Rounds', icon: <Clock className="w-4 h-4" /> },
     { to: '/admin/leaderboard', label: 'Leaderboard', icon: <Trophy className="w-4 h-4" /> },
-    { to: '/admin/import', label: 'CSV Import', icon: <FileSpreadsheet className="w-4 h-4" /> },
+    { to: '/admin/import', label: 'Team CSV Import', icon: <FileSpreadsheet className="w-4 h-4" /> },
+
     { to: '/admin/reports', label: 'Reports', icon: <DownloadCloud className="w-4 h-4" /> },
     { to: '/admin/settings', label: 'Settings', icon: <Sliders className="w-4 h-4" /> },
   ];
@@ -103,19 +103,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
       {isMobileOpen && (
         <div
           onClick={onCloseMobile}
-          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40 lg:hidden"
         />
       )}
 
       <aside
-        className={`fixed top-16 bottom-0 left-0 z-40 w-60 bg-[#080d0a] border-r border-[#141f17] flex flex-col justify-between transition-transform duration-200 ease-in-out ${
+        className={`fixed top-16 bottom-0 left-0 z-40 w-60 bg-[#18212d] border-r border-[#2b3a4f] shadow-sm flex flex-col justify-between transition-transform duration-200 ease-in-out ${
           isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
         }`}
       >
         {/* Navigation Links */}
         <div className="p-4 space-y-4 overflow-y-auto flex-1">
           <div className="px-3 py-1">
-            <span className="text-[10px] font-mono uppercase tracking-wider text-gray-500 font-semibold">
+            <span className="text-[10px] font-mono uppercase tracking-wider text-pink-600 font-bold">
               {getPortalLabel()}
             </span>
           </div>
@@ -129,8 +129,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 className={({ isActive }) =>
                   `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
                     isActive
-                      ? 'bg-[#00b259] text-black font-bold shadow-md shadow-[#00b259]/15'
-                      : 'text-gray-400 hover:text-gray-100 hover:bg-[#101813]'
+                      ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-md shadow-pink-500/20'
+                      : 'text-slate-300 hover:text-pink-600 hover:bg-[#243247]'
                   }`
                 }
               >
@@ -142,10 +142,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Bottom Logout */}
-        <div className="p-4 border-t border-[#141f17]">
+        <div className="p-4 border-t border-[#2b3a4f]">
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition-colors cursor-pointer"
+            className="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium text-slate-300 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
           >
             <LogOut className="w-4 h-4" />
             <span>Logout</span>

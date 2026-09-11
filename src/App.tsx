@@ -12,6 +12,7 @@ import { CinematicIntro } from './components/common/CinematicIntro';
 // Public Auth Pages
 import { LoginPage } from './pages/auth/LoginPage';
 import { TeamLeaderLoginPage } from './pages/auth/TeamLeaderLoginPage';
+import { TeamRegisterPage } from './pages/auth/TeamRegisterPage';
 import { EvaluatorLoginPage } from './pages/auth/EvaluatorLoginPage';
 import { AdminLoginPage } from './pages/auth/AdminLoginPage';
 
@@ -49,8 +50,8 @@ const RootRedirector: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="py-20 text-center text-gray-400 font-mono text-xs">
-        Loading...
+      <div className="py-20 text-center text-gray-500 font-mono text-xs">
+        Loading workspace permissions...
       </div>
     );
   }
@@ -67,7 +68,6 @@ const RootRedirector: React.FC = () => {
 
 function MainApp() {
   const [showIntro, setShowIntro] = useState(() => {
-    // Show intro on initial app load if not already seen in current session
     return !sessionStorage.getItem('gfg_intro_seen');
   });
 
@@ -82,9 +82,11 @@ function MainApp() {
 
       <BrowserRouter>
         <Routes>
-          {/* Public Auth Gateway & Dedicated Login Pages */}
+          {/* Public Auth Gateway & Dedicated Login / Registration Pages */}
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/team/login" element={<TeamLeaderLoginPage />} />
           <Route path="/login/team-leader" element={<TeamLeaderLoginPage />} />
+          <Route path="/team/register" element={<TeamRegisterPage />} />
           <Route path="/login/evaluator" element={<EvaluatorLoginPage />} />
           <Route path="/login/admin" element={<AdminLoginPage />} />
 

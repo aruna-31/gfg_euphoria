@@ -1,12 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, UserRole } from '../types';
-import { authService } from '../services/authService';
+import { authService, RegisterLeaderPayload } from '../services/authService';
 
 interface AuthContextType {
   user: User | null;
   role: UserRole | null;
   isLoading: boolean;
   login: (email: string, pass: string) => Promise<User>;
+  registerLeader: (payload: RegisterLeaderPayload) => Promise<User>;
   loginAsLeader: (email: string, pass: string) => Promise<User>;
   loginAsEvaluator: (email: string, pass: string) => Promise<User>;
   loginAsAdmin: (email: string, pass: string) => Promise<User>;
@@ -31,6 +32,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const logged = await authService.login(email, pass);
       setUser(logged);
       return logged;
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const registerLeader = async (payload: RegisterLeaderPayload): Promise<User> => {
+    setIsLoading(true);
+    try {
+      const registered = await authService.registerLeader(payload);
+      setUser(registered);
+      return registered;
     } finally {
       setIsLoading(false);
     }
@@ -81,6 +93,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         role: user?.role || null,
         isLoading,
         login,
+        registerLeader,
         loginAsLeader,
         loginAsEvaluator,
         loginAsAdmin,

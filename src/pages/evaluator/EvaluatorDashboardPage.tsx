@@ -40,24 +40,15 @@ export const EvaluatorDashboardPage: React.FC = () => {
     setLoading(true);
     try {
       const allEvaluators = await evaluatorService.getAllEvaluators();
-      const current =
-        allEvaluators.find((e) => e.email.toLowerCase() === user?.email.toLowerCase()) ||
-        allEvaluators[0];
-      setEvaluator(current);
-
-      const [allTeams, round, allProblems] = await Promise.all([
-        teamService.getAllTeams(),
-        roundService.getActiveRound(),
-        problemService.getAllProblems(),
-      ]);
-
-      const probMap = new Map(allProblems.map((p) => [p.id, p.title]));
-      setProblems(probMap);
-      setActiveRound(round);
-
-      // Filter teams assigned to this evaluator
-      const filtered = allTeams.filter((t) => current.assignedTeamIds.includes(t.id));
-      setAssignedTeams(filtered);
+      const current = allEvaluators.find((item) => item.email.toLowerCase() === user?.email.toLowerCase());
+      setEvaluator(current || {
+        id: user?.evaluatorId || user?.id || 'evaluator', name: 'Evaluator Workspace', email: user?.email || '',
+        designation: 'Evaluator', organization: 'Not provided', expertise: [], assignedTeamIds: [], assignedRounds: [],
+        completedCount: 0, pendingCount: 0, status: 'ACTIVE',
+      });
+      setAssignedTeams([]);
+      setActiveRound(null);
+      setProblems(new Map());
     } finally {
       setLoading(false);
     }
@@ -100,7 +91,7 @@ export const EvaluatorDashboardPage: React.FC = () => {
               </Badge>
             </div>
             <p className="text-xs text-gray-300 mt-0.5">
-              {evaluator.designation} • {evaluator.organization}
+              {evaluator.designation} â€¢ {evaluator.organization}
             </p>
             <div className="flex flex-wrap gap-1.5 mt-2">
               {evaluator.expertise.map((exp, i) => (
@@ -149,7 +140,7 @@ export const EvaluatorDashboardPage: React.FC = () => {
         />
         <StatCard
           title="Average Score"
-          value={avgScore > 0 ? `${avgScore}/100` : '—'}
+          value={avgScore > 0 ? `${avgScore}/100` : 'â€”'}
           subtitle="Across your evaluations"
           icon={<Award className="w-5 h-5 text-purple-400" />}
         />
@@ -207,7 +198,7 @@ export const EvaluatorDashboardPage: React.FC = () => {
                           <div>
                             <span className="font-bold text-white block">{t.name}</span>
                             <span className="text-[11px] text-gray-400">
-                              {t.college} • <span className="font-mono text-[#00e575]">{t.id}</span>
+                              {t.college} â€¢ <span className="font-mono text-[#00e575]">{t.id}</span>
                             </span>
                           </div>
                         </div>

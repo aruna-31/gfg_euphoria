@@ -24,7 +24,7 @@ export const Button: React.FC<ButtonProps> = ({
   const { playClick } = useAudio();
 
   const baseStyles =
-    'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-offset-[#070908]';
+    'inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-pink-300';
 
   const sizeStyles = {
     sm: 'text-xs px-3 py-1.5 gap-1.5',
@@ -34,15 +34,15 @@ export const Button: React.FC<ButtonProps> = ({
 
   const variantStyles = {
     primary:
-      'bg-[#00b259] hover:bg-[#00c964] text-black font-semibold shadow-lg shadow-[#00b259]/20 hover:shadow-[#00b259]/35 active:scale-[0.98] focus:ring-[#00e575]',
+      'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-md shadow-pink-500/20 active:scale-[0.98]',
     secondary:
-      'bg-[#16211a] hover:bg-[#1f2f25] text-gray-200 border border-[#2c4433] hover:border-[#00b259]/50 active:scale-[0.98] focus:ring-[#00b259]',
+      'bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 hover:border-pink-400 active:scale-[0.98]',
     outline:
-      'bg-transparent hover:bg-[#0e1611] text-[#00e575] border border-[#00b259]/50 hover:border-[#00e575] active:scale-[0.98] focus:ring-[#00e575]',
+      'bg-white hover:bg-pink-50 text-pink-600 border border-pink-300 hover:border-pink-500 active:scale-[0.98]',
     danger:
-      'bg-red-500/15 hover:bg-red-500/25 text-red-400 border border-red-500/40 hover:border-red-400 active:scale-[0.98] focus:ring-red-500',
+      'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 hover:border-rose-400 active:scale-[0.98]',
     ghost:
-      'bg-transparent hover:bg-[#141d17] text-gray-300 hover:text-white active:scale-[0.98] focus:ring-gray-600',
+      'bg-transparent hover:bg-pink-50 text-gray-700 hover:text-pink-600 active:scale-[0.98]',
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -64,14 +64,7 @@ export const Button: React.FC<ButtonProps> = ({
       {...props}
     >
       {isLoading ? (
-        <svg className="animate-spin h-4 w-4 text-current" fill="none" viewBox="0 0 24 24">
-          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-          <path
-            className="opacity-75"
-            fill="currentColor"
-            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-          />
-        </svg>
+        <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin shrink-0" />
       ) : (
         leftIcon
       )}

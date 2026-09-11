@@ -3,7 +3,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { NotificationDropdown } from './NotificationDropdown';
 import { Avatar } from '../ui/Avatar';
-import { LogOut, Menu, X, Terminal, ChevronRight } from 'lucide-react';
+import { LogOut, Menu, X, ChevronRight } from 'lucide-react';
 
 interface NavbarProps {
   onToggleMobileSidebar?: () => void;
@@ -49,27 +49,27 @@ export const Navbar: React.FC<NavbarProps> = ({
   const getRoleBadge = () => {
     switch (role) {
       case 'LEADER':
-        return { label: 'Team Leader', color: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30' };
+        return { label: 'Team Leader', color: 'bg-pink-100 text-pink-700 border-pink-300' };
       case 'EVALUATOR':
-        return { label: 'Evaluator', color: 'bg-amber-500/10 text-amber-400 border-amber-500/30' };
+        return { label: 'Evaluator', color: 'bg-amber-100 text-amber-700 border-amber-300' };
       case 'ADMIN':
-        return { label: 'Administrator', color: 'bg-purple-500/10 text-purple-400 border-purple-500/30' };
+        return { label: 'Administrator', color: 'bg-purple-100 text-purple-700 border-purple-300' };
       default:
-        return { label: 'User', color: 'bg-gray-500/10 text-gray-400 border-gray-500/30' };
+        return { label: 'User', color: 'bg-gray-100 text-gray-700 border-gray-300' };
     }
   };
 
   const badge = getRoleBadge();
 
   return (
-    <header className="sticky top-0 z-40 bg-[#080d0a]/95 backdrop-blur-md border-b border-[#141f17] select-none">
+    <header className="sticky top-0 z-40 bg-[#18212d]/95 backdrop-blur-md border-b border-[#2b3a4f] shadow-sm select-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
         {/* Left: Mobile menu toggle & Brand Logo */}
         <div className="flex items-center gap-3">
           {onToggleMobileSidebar && (
             <button
               onClick={onToggleMobileSidebar}
-              className="lg:hidden p-2 text-gray-400 hover:text-white rounded-lg hover:bg-[#131d16] transition-colors cursor-pointer"
+              className="lg:hidden p-2 text-slate-300 hover:text-pink-600 rounded-lg hover:bg-pink-50 transition-colors cursor-pointer"
               aria-label="Toggle menu"
             >
               {isMobileSidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -77,14 +77,10 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
 
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00b259] to-[#04331a] flex items-center justify-center p-0.5 shadow-md shadow-[#00b259]/20">
-              <div className="w-full h-full bg-[#080d0a] rounded-[6px] flex items-center justify-center text-[#00e575]">
-                <Terminal className="w-4 h-4" />
-              </div>
-            </div>
+            <img src="/gfg-logo.svg" alt="GeeksforGeeks" className="w-16 h-10 object-contain" />
             <div>
-              <span className="text-sm font-bold tracking-tight text-white">
-                EUPHORIA <span className="text-[#00e575] font-mono text-xs">2K26</span>
+              <span className="text-sm font-extrabold tracking-tight text-slate-100">
+                HACKODESSEY <span className="text-pink-400 font-mono text-xs">4.0</span>
               </span>
             </div>
           </div>
@@ -92,27 +88,25 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Center: Breadcrumb */}
         {breadcrumb && (
-          <div className="hidden md:flex items-center gap-2 text-xs text-gray-400 font-mono">
+          <div className="hidden md:flex items-center gap-2 text-xs text-slate-400 font-mono">
             <span>{badge.label}</span>
-            <ChevronRight className="w-3.5 h-3.5 text-gray-600" />
-            <span className="text-gray-200 font-semibold">{breadcrumb}</span>
+            <ChevronRight className="w-3.5 h-3.5 text-gray-400" />
+            <span className="text-slate-100 font-bold">{breadcrumb}</span>
           </div>
         )}
 
-        {/* Right: Notification, Profile, Logout */}
+        {/* Right: Profile, Logout */}
         <div className="flex items-center gap-3">
-          <NotificationDropdown />
-
           {user && (
-            <div className="flex items-center gap-2.5 pl-2 border-l border-[#162319]">
+            <div className="flex items-center gap-2.5 pl-2 border-l border-[#2b3a4f]">
               <Avatar
                 src={user.avatarUrl}
                 name={user.name}
                 size="sm"
-                className="ring-1 ring-[#1f3325]"
+                className="ring-2 ring-pink-200"
               />
               <div className="hidden sm:block text-left">
-                <p className="text-xs font-semibold text-gray-200 truncate max-w-[120px]">
+                <p className="text-xs font-semibold text-slate-100 truncate max-w-[120px]">
                   {user.name}
                 </p>
                 <span className={`inline-block text-[10px] font-mono px-1.5 py-0.2 rounded border ${badge.color}`}>
@@ -124,7 +118,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <button
             onClick={handleLogout}
-            className="p-2 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 transition-all cursor-pointer"
+            className="p-2 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 border border-transparent hover:border-rose-200 transition-all cursor-pointer"
             title="Log out of session"
           >
             <LogOut className="w-4 h-4" />

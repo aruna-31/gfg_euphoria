@@ -1,0 +1,171 @@
+title,description,requirements,expectations
+FactoryFlow - Autonomous Production Schedule Recovery Agent,"A manufacturing company has a production schedule containing jobs with different deadlines, priorities, machine requirements, processing times, and dependencies. During production, machine downtime, urgent orders, material shortages, or unexpected processing delays can invalidate the original plan. Build an AI system that detects disruptions, reconstructs the production plan, simulates alternatives, and autonomously selects the recovery strategy that minimizes late orders, downtime, and cost.","1. Implement at least five meaningful intelligence components: job completion-time prediction, machine availability/failure-risk prediction, order-priority prediction, delay propagation, business-impact prediction, plus a scheduling/optimization component.
+2. Maintain an internal production-state representation.
+3. Implement a team-built agent/controller that generates and compares multiple recovery strategies.
+4. Support at least two disruption types and machine/job constraints.
+5. Provide a simulation mode where a judge can inject a disruption during the demo.
+6. Expose the agent's evidence, decisions, and re-planning logic.","1. Dashboard must show production schedule, machine utilization, bottlenecks, jobs at risk, and expected delays.
+2. Show current plan vs proposed plan, predicted cost, and late-order reduction.
+3. Show the agent's decision trace and why the selected schedule was preferred.
+4. Demonstrate re-planning after a second disruption.
+5. Measure improvement against a fixed-rule or original-schedule baseline."
+ReleaseSentinel - Autonomous Software Release Risk Planner,"Software releases combine code changes, test results, dependencies, historical incidents, ownership information, and service criticality. A release can pass standard checks and still cause production failures. Build an AI system that estimates release risk, identifies likely failure modes, evaluates rollout strategies, and determines whether the release should proceed, be staged, delayed, or prepared for rollback.","1. Implement at least five meaningful intelligence components: change-risk analysis, test-failure prediction, defect/affected-module prediction, historical-incident similarity, production-impact prediction, plus rollout-risk optimization.
+2. Represent the current release state and affected services/modules.
+3. Build an agent that selects additional evidence, generates rollout strategies, and compares their predicted outcomes.
+4. Support staged-rollout scenarios such as 10%, 50%, and 100%.
+5. Use a small prepared incident history and inject known risky releases for evaluation.
+6. Do not use an external LLM as the primary release decision engine.","1. Dashboard must show release readiness, risk by module, predicted failure modes, similar incidents, rollout strategy comparison, and final recommendation.
+2. Show expected impact of each rollout strategy.
+3. Show evidence behind the release decision.
+4. Evaluate earlier detection against a simple pass/fail CI baseline.
+5. Demonstrate re-evaluation after simulated production feedback."
+InvoiceMind - Autonomous Accounts-Payable Investigation Agent,"Organizations process large numbers of invoices containing prices, quantities, vendor information, purchase orders, taxes, and payment history. Manual review is expensive, while simple rules generate too many false positives. Build an AI system that investigates invoices before payment, determines whether an anomaly is legitimate, estimates financial risk, and chooses approve, hold, verify, or escalate.","1. Implement invoice-field extraction, duplicate detection, price/quantity anomaly detection, vendor behavior risk, payment risk, and financial-impact estimation.
+2. Maintain invoice, purchase-order, and vendor history.
+3. Build an agent that selectively investigates related records instead of inspecting everything equally.
+4. Support duplicate, price, quantity, and vendor-history anomaly scenarios.
+5. Include simulated reviewer feedback.
+6. Track review effort and money at risk.","1. Dashboard must show total invoices, auto-approved vs reviewed, money at risk, duplicate clusters, vendor risk, and investigation queue.
+2. Show evidence used for each decision.
+3. Show financial impact and confidence.
+4. Compare agent-assisted review against simple rules.
+5. Measure reduction in review effort while controlling false approvals."
+ReturnWise - Autonomous E-Commerce Returns Investigator,"Online businesses lose money when legitimate returns are mixed with repeated abuse, damaged-item claims, incorrect-product claims, and unusual customer behavior. Build an AI investigation system that determines whether a return should be approved, inspected, exchanged, restricted, or escalated while balancing customer experience and business loss.","1. Implement return-reason classification, customer behavior modeling, product-defect patterns, return-abuse risk, resale-value prediction, and expected-loss estimation.
+2. Combine current return evidence with customer and product history.
+3. Build an agent that investigates context, simulates possible actions, and selects one under business constraints.
+4. Support multiple return scenarios and changing customer/product history.
+5. Allow a judge to modify history and rerun the decision.
+6. Include an explicit loss-vs-customer-impact trade-off.","1. Dashboard must show return risk, customer/product factors, estimated financial impact, recommended action, and decision evidence.
+2. Show how the decision changes when context changes.
+3. Show trends in return abuse and product defects.
+4. Compare against a simple rule baseline.
+5. Report prevented-loss or expected-loss reduction."
+ShiftPilot - Autonomous Service-Center Queue Orchestrator,"Customer-service centers face unpredictable demand and limited staffing. Predicting call volume alone does not solve the problem. Build an AI system that forecasts workload, predicts queue delays, estimates SLA risk, and dynamically determines how available agents should be allocated across queues.","1. Implement arrival-volume forecasting, service-time prediction, queue-delay prediction, customer-priority prediction, agent-skill matching, and SLA-risk prediction.
+2. Represent queue state, agent capacity, skills, and current assignments.
+3. Build an agent that generates alternative staffing allocations and simulates waiting-time/SLA outcomes.
+4. Support demand spikes and agent unavailability.
+5. Compare dynamic allocation with a fixed staffing policy.
+6. Allow re-planning when new demand arrives.","1. Dashboard must show queue health, predicted arrivals, wait-time forecasts, SLA risk, agent utilization, and current vs proposed allocation.
+2. Show before/after simulation for a disruption.
+3. Display the selected allocation and its expected improvement.
+4. Measure waiting-time and SLA-risk reduction.
+5. Show agent decision history."
+Adaptive Story Challenge - Autonomous Learning Strategy Engine,Conventional learning systems often present the same content sequence to every learner. Build an adaptive learning environment that maintains an evolving representation of learner knowledge and chooses the next learning intervention expected to maximize mastery within a limited interaction or time budget.,"1. Implement knowledge-state estimation, concept mastery prediction, misconception detection, difficulty estimation, learning-gain prediction, and content/branch ranking.
+2. Maintain a structured concept graph and learner state.
+3. Build an agent that chooses among revision, new concept, hint, explanation, easier/harder challenge, or scenario branch.
+4. Track correctness, response time, repeated errors, and simulated learner profiles.
+5. Give the agent a limited teaching budget.
+6. Compare adaptive learning against a fixed sequence.","1. Dashboard must show mastery graph, misconception map, learning trajectory, chosen interventions, difficulty progression, and predicted final mastery.
+2. Show how the strategy changes for different learner states.
+3. Show before/after learning outcome.
+4. Measure expected or simulated learning-gain improvement over baseline.
+5. Keep the experience interactive rather than a generic chatbot."
+StockShield - Inventory Disruption Recovery Agent,"Retail businesses often discover stock problems too late. A product can look healthy while demand shifts, suppliers delay shipments, or a region consumes inventory faster. Build an AI system that predicts upcoming inventory failures and autonomously creates recovery strategies.","1. Implement demand forecasting, stockout probability, supplier-delay prediction, regional demand-shift detection, recovery-outcome prediction, and lost-revenue prediction.
+2. Model products, suppliers, regions, lead times, and inventory capacity.
+3. Build an agent that generates reorder, transfer, allocation, or supplier-switch strategies.
+4. Simulate the outcome of competing recovery strategies.
+5. Support at least two disruption types.
+6. Allow a judge to inject a demand or supplier shock.","1. Dashboard must show products at risk, stockout dates, supplier risk, regional demand, expected lost revenue, and strategy comparison.
+2. Show the recommended recovery action.
+3. Show current vs recovered inventory state.
+4. Compare against a fixed reorder-point baseline.
+5. Measure stockouts or expected lost revenue avoided."
+ClaimCheck - Autonomous Insurance Claim Investigation Simulator,"Insurance operations receive claims containing narratives, invoices, timelines, prior claim history, and supporting evidence. Simple rules create excessive false positives while manual review is expensive. Build an AI investigation system that determines which claims can be processed quickly, which require more evidence, and which require human investigation.","1. Implement claim-type classification, narrative inconsistency detection, historical-claim similarity, fraud/anomaly risk, claim-cost prediction, and evidence-priority ranking.
+2. Build an agent that chooses which evidence source to inspect next.
+3. Maintain an investigation state and update claim risk after new evidence.
+4. Use synthetic or public claim-style data only.
+5. Include simulated reviewer feedback.
+6. Treat the system as an operational simulation, not real insurance adjudication.","1. Dashboard must show claims queue, risk score, estimated financial exposure, evidence inspected, investigation path, final action, and confidence.
+2. Show which evidence changed the decision.
+3. Measure analyst-review reduction and false-positive trade-off.
+4. Demonstrate selective investigation rather than full review for every claim.
+5. Compare with a rule-based triage baseline."
+ProcurementPilot - Intelligent Supplier Strategy Agent,"A company must procure materials from several suppliers under uncertain price, quality, delivery, and capacity conditions. Build an AI system that predicts supplier performance and creates procurement strategies that minimize total business risk and cost.","1. Implement price prediction, supplier reliability prediction, delivery-time prediction, quality-risk prediction, capacity prediction, and procurement cost/risk optimization.
+2. Use at least three suppliers with minimum/maximum order constraints.
+3. Build an agent that generates multiple allocation strategies and simulates their outcomes.
+4. Support supplier disruption such as price, capacity, or reliability changes.
+5. Track historical supplier performance.
+6. Re-plan dynamically when supplier conditions change.","1. Dashboard must show supplier risk matrix, recommended allocation, expected cost, delivery risk, quality risk, and scenario comparison.
+2. Show agent strategy history.
+3. Compare against a single-supplier or rule-based baseline.
+4. Measure expected cost/risk improvement under changing conditions.
+5. Explain why the allocation was selected."
+ProcessX - Autonomous Business Bottleneck Investigator,"A company notices that a critical business process has become slower or more expensive but does not know which stage is responsible or what intervention will provide the best return. Build an AI system that investigates the process, identifies bottlenecks, generates hypotheses, simulates interventions, and recommends the highest-impact improvement.","1. Implement process-time prediction, bottleneck detection, process anomaly detection, delay-cause prediction, intervention-impact prediction, and ROI optimization.
+2. Use event-log style process data with at least five stages.
+3. Build an agent that chooses which stage or factor to investigate next.
+4. Generate at least two intervention options with different costs and expected effects.
+5. Simulate intervention outcomes before recommending one.
+6. Support a second bottleneck appearing after the first intervention.","1. Dashboard must show process map, stage health, bottleneck ranking, delay causes, investigation tree, intervention simulation, expected improvement, and ROI.
+2. Show the investigation path used by the agent.
+3. Compare against fixed-rule bottleneck analysis.
+4. Measure expected cycle-time or cost improvement.
+5. Demonstrate re-planning after a new bottleneck appears."
+SOCPilot - Autonomous Security Alert Investigation Agent,"Security teams receive large volumes of alerts, but many are low-value or duplicate signals. Build an AI security-operations agent that groups related alerts into probable incidents, investigates the most important evidence, and prioritizes what analysts should handle first.","1. Implement alert classification, alert clustering/relatedness, user/device behavior anomaly detection, threat-severity prediction, incident correlation, and risk-priority scoring.
+2. Generate at least 100 simulated alerts with known multi-alert incident groups.
+3. Build an investigation state and agent that chooses what to inspect next.
+4. Support escalation, grouping, suppression, and analyst-review outcomes.
+5. Include analyst feedback simulation.
+6. Measure noise reduction without losing true simulated incidents.","1. Dashboard must show alert volume, incident clusters, threat severity, investigation graph/timeline, analyst priority queue, agent actions, and supporting evidence.
+2. Show alert-to-incident compression.
+3. Show why each incident received its priority.
+4. Compare against raw-alert severity sorting.
+5. Measure analyst workload reduction and incident preservation."
+SLAShield - Security SLA Breach Prevention Agent,"Security incidents can become business failures when response or resolution SLAs are missed. Build an AI system that predicts which tickets are likely to breach SLA and autonomously recommends re-assignment, escalation, or prioritization actions.","1. Implement incident-severity classification, resolution-time prediction, SLA-breach probability, analyst workload prediction, queue-delay prediction, and escalation-priority scoring.
+2. Use synthetic security tickets with configurable SLA rules.
+3. Model analyst capacity, current queue, ticket severity, and historical resolution times.
+4. Build an agent that simulates reassignments/escalations before deciding.
+5. Allow tickets and workload to change during the demo.
+6. Compare against first-come-first-served or static severity rules.","1. Dashboard must show active tickets, SLA countdowns, breach probabilities, analyst capacity, escalation queue, breach trend, and breaches avoided.
+2. Show before/after queue state.
+3. Show the reason for escalation or reassignment.
+4. Measure expected SLA breaches avoided and workload balance.
+5. Demonstrate live re-planning as the queue changes."
+IdentityShield - Autonomous Account Compromise Investigator,"Account compromise rarely appears as a single obvious event. A risky incident may consist of an unusual login, a new device, abnormal access patterns, a privilege change, and unusual data activity. Build an AI investigation system that estimates compromise probability and determines what evidence should be examined next.","1. Implement login anomaly detection, device-behavior modeling, access-pattern anomaly detection, privilege-change risk, data-access anomaly detection, and account-compromise probability.
+2. Create normal behavior profiles from historical simulated activity.
+3. Inject several compromise patterns.
+4. Build an agent that selects evidence sources and updates account risk.
+5. Include time, location, device, endpoint, privilege, and data-access signals.
+6. Link decisions to evidence.","1. Dashboard must show account risk, normal vs current behavior, incident timeline, evidence inspected, affected resources, compromise probability, and containment priority.
+2. Show which signal combinations increased the risk.
+3. Measure detection lead time and false-alert trade-off.
+4. Compare against independent rule alerts.
+5. Demonstrate investigation of an unseen compromise pattern."
+SupplyGuard - Autonomous Software Supply-Chain Compromise Investigator,A software dependency can be vulnerable or compromised without being directly imported by an important application path. Build an AI system that determines the real blast radius of a suspicious dependency and selects the safest remediation strategy.,"1. Implement dependency/component extraction, vulnerability classification, reachability/impact analysis, exploitability prediction, application-impact prediction, and remediation-risk modeling.
+2. Accept package manifests and a prepared vulnerability dataset.
+3. Construct a direct and transitive dependency graph.
+4. Inject a vulnerable or suspicious dependency.
+5. Build an agent that compares upgrade, isolation, replacement, or monitoring strategies.
+6. Calculate before/after exposure.","1. Dashboard must show dependency graph, vulnerable components, affected features, reachability score, blast radius, remediation comparison, and before/after risk.
+2. Explain why a vulnerable component is or is not high priority.
+3. Measure prioritization accuracy on injected scenarios.
+4. Measure reduced unnecessary remediation compared with severity-only ranking.
+5. Show the agent's remediation reasoning path."
+PhishChain - Social-Engineering Attack Progression Analyzer,"Sophisticated social-engineering attacks may unfold through a sequence of messages: trust-building, urgency, impersonation, information requests, and escalation. Build an AI system that models the conversation as an evolving threat state rather than classifying each message independently.","1. Implement message intent classification, social-engineering stage detection, sender-relationship modeling, URL/attachment risk, conversation anomaly detection, and attack-progression scoring.
+2. Use synthetic or public example conversations.
+3. Track sender relationship and conversation metadata.
+4. Inject staged attack patterns.
+5. Build an agent that updates the threat state and selects evidence.
+6. Identify the messages that caused the risk state to change.","1. Dashboard must show threat score over time, manipulation stages, suspicious messages, sender relationship, evidence indicators, attack progression graph, and recommended action.
+2. Compare conversation-level analysis with message-by-message classification.
+3. Measure earlier detection of multi-stage attacks.
+4. Explain the transition from normal conversation to high-risk interaction.
+5. Show agent evidence-selection steps."
+BreachScope - Autonomous Security Incident Impact Estimator,"After a security incident is detected, responders need to know what has actually been affected: users, applications, data categories, and business services. Build an AI system that estimates incident impact and investigates the evidence required to reduce uncertainty.","1. Implement security-event classification, asset relationship/impact modeling, lateral-impact prediction, data-sensitivity classification, business-impact prediction, and incident-severity modeling.
+2. Use simulated authentication, process, file, network, and asset relationship data.
+3. Include several incident scenarios with known ground truth.
+4. Build an agent that traces impact paths and selectively requests evidence.
+5. Represent asset criticality and data sensitivity.
+6. Link every conclusion to supporting evidence.","1. Dashboard must show incident map, affected assets, data categories, business-impact score, attack/impact timeline, uncertainty zones, containment priority, and evidence graph.
+2. Show how new evidence reduces uncertainty.
+3. Measure affected-asset recall against synthetic ground truth.
+4. Measure analyst time saved compared with manual impact reconstruction.
+5. Keep all inputs simulated or authorized."
+VulnOps - Autonomous Vulnerability Remediation Planner,"A company may have hundreds of known vulnerabilities but limited engineering capacity. The difficult problem is deciding what to fix first, which remediation strategy to use, and how much risk the company will remove by doing so. Build a security planning system that treats remediation as a constrained optimization problem.","1. Implement vulnerability severity modeling, exploitability prediction, asset-exposure modeling, business-criticality prediction, fix-impact prediction, and remediation-priority optimization.
+2. Use a prepared vulnerability dataset with asset, exposure, criticality, exploitability, and estimated effort.
+3. Give the system a limited remediation budget.
+4. Build an agent that compares remediation alternatives.
+5. Inject a new high-priority vulnerability during the planning cycle.
+6. Re-plan the queue without restarting.","1. Dashboard must show vulnerability heatmap, business exposure, exploitability, priority queue, engineering effort, predicted risk reduction, before/after simulation, and agent planning trace.
+2. Compare against severity-only prioritization.
+3. Measure expected risk reduction per unit of engineering effort.
+4. Show how the plan changes when the remediation budget changes.
+5. Show why the final queue is optimal or preferable under the defined objective."

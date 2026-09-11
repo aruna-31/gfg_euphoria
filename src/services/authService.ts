@@ -1,6 +1,5 @@
 import { User, UserRole } from '../types';
-import { MOCK_TEAMS } from '../mock/teamsData';
-import { MOCK_EVALUATORS } from '../mock/evaluatorsData';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000/api/v1';
 
 export interface JWTPayload {
   sub: string;
@@ -13,12 +12,21 @@ export interface JWTPayload {
   iss: string;
 }
 
-export const DEMO_CREDENTIALS = [
-  { label: 'Team Leader (Team Vertex)', email: 'aarav.sharma@iitm.ac.in', password: 'leader123', role: 'LEADER' },
-  { label: 'Team Leader (Team Nova)', email: 'karthik.s@klu.ac.in', password: 'leader123', role: 'LEADER' },
-  { label: 'Jury / Evaluator', email: 'dr.aravind@kare.edu.in', password: 'eval123', role: 'EVALUATOR' },
-  { label: 'Operations Admin', email: 'admin@gfgkare.in', password: 'admin123', role: 'ADMIN' },
-];
+export interface RegisterLeaderPayload {
+  name: string;
+  email: string;
+  password: string;
+  phone: string;
+  college: string;
+  team_name: string;
+  member2_name?: string;
+  member2_email?: string;
+  member2_role?: string;
+  member3_name?: string;
+  member3_email?: string;
+  member3_role?: string;
+}
+
 
 class AuthService {
   private currentUser: User | null = null;
@@ -100,104 +108,160 @@ class AuthService {
     return token ? { Authorization: `Bearer ${token}` } : {};
   }
 
-  public async login(email: string, pass: string): Promise<User> {
-    const clean = email.trim().toLowerCase();
-    if (clean.includes('admin')) {
-      return this.loginAsAdmin(clean, pass);
-    }
-    const isEval = MOCK_EVALUATORS.some((e) => e.email.toLowerCase() === clean);
-    if (isEval) {
-      return this.loginAsEvaluator(clean, pass);
-    }
-    return this.loginAsLeader(clean, pass);
-  }
-
-  // 1. Team Leader Login
-  public async loginAsLeader(email: string, _pass: string): Promise<User> {
-    await new Promise((r) => setTimeout(r, 600));
-    const cleanEmail = email.trim().toLowerCase();
-
-    const team = MOCK_TEAMS.find((t) => t.leaderEmail.toLowerCase() === cleanEmail);
-    if (!team) {
-      throw new Error(`No registered team found with Leader email: "${cleanEmail}". Only registered Team Leader emails can authenticate.`);
-    }
-
-    const user: User = {
-      id: `usr-lead-${team.id}`,
-      email: team.leaderEmail,
-      name: team.leaderName,
-      role: 'LEADER',
-      teamId: team.id,
-      college: team.college,
-      avatarUrl: team.photoUrl,
-    };
-
-    const token = this.createJWT(user);
-    this.setSession(user, token);
-    return user;
-  }
-
-  // 2. Evaluator Login
-  public async loginAsEvaluator(email: string, _pass: string): Promise<User> {
-    await new Promise((r) => setTimeout(r, 600));
-    const cleanEmail = email.trim().toLowerCase();
-
-    const evaluator = MOCK_EVALUATORS.find((e) => e.email.toLowerCase() === cleanEmail);
-    if (!evaluator) {
-      throw new Error(`Jury credentials not found for: "${cleanEmail}". Check with Hackathon Operations.`);
-    }
-
-    const user: User = {
-      id: `usr-eval-${evaluator.id}`,
-      email: evaluator.email,
-      name: evaluator.name,
-      role: 'EVALUATOR',
-      evaluatorId: evaluator.id,
-      college: evaluator.organization,
-      avatarUrl: evaluator.avatarUrl,
-    };
-
-    const token = this.createJWT(user);
-    this.setSession(user, token);
-    return user;
-  }
-
-  // 3. Admin Login
-  public async loginAsAdmin(email: string, pass: string): Promise<User> {
-    await new Promise((r) => setTimeout(r, 600));
-    const cleanEmail = email.trim().toLowerCase();
-
-    if (cleanEmail !== 'admin@gfgkare.in' && !cleanEmail.startsWith('admin')) {
-      throw new Error('Unauthorized: Admin portal access requires an authorized administrator credential.');
-    }
-
-    const user: User = {
-      id: 'usr-admin-01',
-      email: cleanEmail,
-      name: 'Operations Director',
-      role: 'ADMIN',
-      college: 'KARE Hackathon Directorate',
-    };
-
-    const token = this.createJWT(user);
-    this.setSession(user, token);
-    return user;
-  }
-
   public getCurrentUser(): User | null {
     return this.currentUser;
   }
 
-  public logout(): void {
-    this.currentUser = null;
-    localStorage.removeItem(this.userKey);
-    localStorage.removeItem(this.tokenKey);
+  public isAuthenticated(): boolean {
+    if (!this.currentUser) return false;
+    const token = this.getToken();
+    if (!token) return false;
+    const payload = this.decodeJWT(token);
+    return Boolean(payload && payload.exp > Math.floor(Date.now() / 1000));
   }
 
-  private setSession(user: User, token: string) {
-    this.currentUser = user;
-    localStorage.setItem(this.userKey, JSON.stringify(user));
-    localStorage.setItem(this.tokenKey, token);
+  // --- API Authentication Methods ---
+
+  public async registerLeader(payload: RegisterLeaderPayload): Promise<User> {
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/register-leader`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.detail || 'Registration failed.');
+      }
+
+      const data = await res.json();
+      const token = data.access_token;
+      const user: User = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: 'LEADER',
+        college: data.user.college,
+        teamId: data.user.teamId,
+      };
+
+      localStorage.setItem(this.tokenKey, token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.currentUser = user;
+
+      return user;
+    } catch (err: unknown) {
+      throw err instanceof Error ? err : new Error('Registration failed.');
+    }
+  }
+
+  public async loginAsLeader(email: string, password: string): Promise<User> {
+    const cleanEmail = email.trim().toLowerCase();
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/login-leader`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const user: User = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: 'LEADER',
+          college: data.user.college,
+          teamId: data.user.teamId,
+        };
+
+        localStorage.setItem(this.tokenKey, data.access_token);
+        localStorage.setItem(this.userKey, JSON.stringify(user));
+        this.currentUser = user;
+        return user;
+      }
+    } catch (err: unknown) {
+      throw err instanceof Error ? err : new Error('Team Leader login failed.');
+    }
+
+    throw new Error('Authentication failed. Verify your registered Team Leader email and password.');
+  }
+
+  public async login(email: string, password: string): Promise<User> {
+    return this.loginAsLeader(email, password);
+  }
+
+  public async loginAsEvaluator(email: string, password: string): Promise<User> {
+    const cleanEmail = email.trim().toLowerCase();
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/login-evaluator`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const user: User = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: 'EVALUATOR',
+          college: data.user.college,
+          evaluatorId: data.user.id,
+        };
+
+        localStorage.setItem(this.tokenKey, data.access_token);
+        localStorage.setItem(this.userKey, JSON.stringify(user));
+        this.currentUser = user;
+        return user;
+      }
+    } catch (err: unknown) {
+      throw err instanceof Error ? err : new Error('Evaluator login failed.');
+    }
+
+    throw new Error('Authentication failed. Verify your evaluator email and password.');
+  }
+
+  public async loginAsAdmin(email: string, password: string): Promise<User> {
+    const cleanEmail = email.trim().toLowerCase();
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/auth/login-admin`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: cleanEmail, password }),
+      });
+
+      if (res.ok) {
+        const data = await res.json();
+        const user: User = {
+          id: data.user.id,
+          name: data.user.name,
+          email: data.user.email,
+          role: 'ADMIN',
+          college: data.user.college,
+        };
+
+        localStorage.setItem(this.tokenKey, data.access_token);
+        localStorage.setItem(this.userKey, JSON.stringify(user));
+        this.currentUser = user;
+        return user;
+      }
+    } catch (err: unknown) {
+      throw err instanceof Error ? err : new Error('Administrator login failed.');
+    }
+
+    throw new Error('Authentication failed. Verify your administrator email and password.');
+  }
+
+  public logout(): void {
+    localStorage.removeItem(this.tokenKey);
+    localStorage.removeItem(this.userKey);
+    this.currentUser = null;
   }
 }
 

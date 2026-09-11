@@ -75,13 +75,13 @@ export const AdminDashboardPage: React.FC = () => {
       <div className="p-6 rounded-2xl bg-gradient-to-r from-[#0d1611] via-[#111f15] to-[#0a100d] border border-[#203627] flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-black text-white">Operations Command Center</h1>
+            <h1 className="text-2xl font-black text-white">Hackodessey 4.0 Administration</h1>
             <Badge variant="green" size="sm">
-              ROUND 2 LIVE
+              NO LIVE DATA
             </Badge>
           </div>
           <p className="text-xs text-gray-300 mt-1 max-w-xl">
-            Real-time control tower for GFG Euphoria. Monitor participant onboarding, CSV batch pipelines, evaluator queues, and score distributions.
+            Live records will appear here after teams, evaluator profiles, assignments, and evaluations are imported.
           </p>
         </div>
 
@@ -126,7 +126,7 @@ export const AdminDashboardPage: React.FC = () => {
         <StatCard
           title="Active Round"
           value={`R${metrics.activeRoundNumber}`}
-          subtitle="Mid-Checkpoint"
+          subtitle={metrics.activeRoundName}
           icon={<Clock className="w-4 h-4 text-amber-400" />}
         />
         <StatCard
@@ -137,7 +137,7 @@ export const AdminDashboardPage: React.FC = () => {
         <StatCard
           title="Avg Score"
           value={`${metrics.averageScore}`}
-          subtitle="Out of 200"
+          subtitle="No evaluations yet"
           icon={<TrendingUp className="w-4 h-4 text-emerald-400" />}
         />
       </div>
@@ -199,7 +199,7 @@ export const AdminDashboardPage: React.FC = () => {
               <div className="flex items-center gap-2">
                 <Activity className="w-4 h-4 text-[#00e575]" />
                 <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-white">
-                  Live Event Activity Stream
+                  Recent Activity
                 </h3>
               </div>
               <span className="w-2 h-2 rounded-full bg-[#00e575] animate-pulse" />
@@ -213,7 +213,7 @@ export const AdminDashboardPage: React.FC = () => {
                     <p className="text-gray-200 font-semibold leading-tight">{act.title}</p>
                     <p className="text-[11px] text-gray-400 mt-0.5 leading-snug">{act.description}</p>
                     <span className="text-[10px] font-mono text-gray-500 mt-0.5 block">
-                      {act.timestamp} • by {act.actorName}
+                      {act.timestamp} â€¢ by {act.actorName}
                     </span>
                   </div>
                 </div>
