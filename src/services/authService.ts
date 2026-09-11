@@ -263,15 +263,7 @@ class AuthService {
     localStorage.removeItem(this.userKey);
     this.currentUser = null;
   }
-
-  private assertPassword(email: string, password: string, role: UserRole, configuredPassword?: string) {
-    const credential = DEMO_CREDENTIALS.find(
-      (item) => item.email === email && item.role === role
-    );
-    if ((!credential && !configuredPassword) || (configuredPassword || credential?.password) !== password) {
-      throw new Error('Invalid hackathon credentials. Use the password issued by Operations.');
-    }
-  }
 }
 
 export const authService = new AuthService();
+

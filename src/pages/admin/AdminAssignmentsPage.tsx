@@ -55,12 +55,9 @@ export const AdminAssignmentsPage: React.FC = () => {
     if (!selectedEvalId || !selectedTeamId) return;
 
     try {
-      const selectedTeam = teams.find((team) => team.id === selectedTeamId);
       await evaluatorService.assignTeam(
         selectedEvalId,
-        selectedTeamId,
-        selectedRoundId ? Number(selectedRoundId) : undefined,
-        selectedProblemId || selectedTeam?.problemStatementId
+        selectedTeamId
       );
       const updatedEvals = await evaluatorService.getAllEvaluators();
       setEvaluators(updatedEvals);

@@ -129,9 +129,6 @@ export const TeamLeaderLoginPage: React.FC = () => {
               <span>New Team Leader? Register Your Squad Here</span>
             </button>
           </div>
-
-        </div>
-          </div>
         </div>
       </div>
 
