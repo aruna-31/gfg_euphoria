@@ -40,6 +40,11 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+  ::selection {
+    background: rgba(0, 229, 117, 0.28);
+    color: #ffffff;
+  }
+
   #root {
     min-height: 100vh;
     display: flex;
@@ -77,6 +82,12 @@
   border: 1px solid rgba(244, 114, 182, 0.3);
   box-shadow: 0 4px 20px -5px rgba(244, 114, 182, 0.12);
   transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.premium-surface {
+  background: linear-gradient(145deg, rgba(17, 28, 21, 0.94), rgba(8, 13, 10, 0.98));
+  border: 1px solid rgba(75, 113, 85, 0.28);
+  box-shadow: 0 22px 60px rgba(0, 0, 0, 0.22), inset 0 1px rgba(255, 255, 255, 0.025);
 }
 
 .gfg-glass-card:hover {

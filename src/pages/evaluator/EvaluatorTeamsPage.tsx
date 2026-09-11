@@ -119,7 +119,9 @@ export const EvaluatorTeamsPage: React.FC = () => {
 
               <div className="pt-3 border-t border-[#17251c] flex items-center justify-between">
                 <div>
-                  <span className="text-[10px] font-mono text-gray-400 block">Round 2 Score</span>
+                  <span className="text-[10px] font-mono text-gray-400 block">
+                    Round {activeRound?.number || '-'} Score
+                  </span>
                   <span className="text-base font-mono font-bold text-[#00e575]">
                     {hasEvaluated ? `${t.roundScores[activeRound?.number || 2]} / 100` : 'Not evaluated yet'}
                   </span>

@@ -12,16 +12,22 @@ class SoundService {
     if (savedVol !== null) this.volume = parseFloat(savedVol);
   }
 
-  private initContext() {
+  private initContext(): boolean {
     if (!this.ctx) {
       const AudioCtx =
         window.AudioContext ||
         (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-      this.ctx = new AudioCtx();
+      if (!AudioCtx) return false;
+      try {
+        this.ctx = new AudioCtx();
+      } catch {
+        return false;
+      }
     }
     if (this.ctx.state === 'suspended') {
-      this.ctx.resume();
+      void this.ctx.resume().catch(() => undefined);
     }
+    return true;
   }
 
   public getMuted(): boolean {
@@ -48,7 +54,7 @@ class SoundService {
 
   // --- KAHOOT-INSPIRED GAME-LIKE BACKGROUND MUSIC SYNTHESIZER ---
   public toggleBackgroundMusic(): boolean {
-    this.initContext();
+    if (!this.initContext()) return false;
     if (this.isBgmPlaying) {
       this.stopBackgroundMusic();
       return false;
@@ -121,8 +127,7 @@ class SoundService {
 
   public playClick() {
     if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
+    if (!this.initContext() || !this.ctx) return;
 
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -144,8 +149,7 @@ class SoundService {
   // Kahoot-style bright correct/success arpeggio fanfare
   public playSuccess() {
     if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
+    if (!this.initContext() || !this.ctx) return;
 
     const notes = [523.25, 659.25, 783.99, 1046.5]; // C5, E5, G5, C6
     notes.forEach((freq, i) => {
@@ -171,8 +175,7 @@ class SoundService {
   // Kahoot-style podium rank up whoosh
   public playRankUp() {
     if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
+    if (!this.initContext() || !this.ctx) return;
 
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -193,8 +196,7 @@ class SoundService {
 
   public playAlert() {
     if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
+    if (!this.initContext() || !this.ctx) return;
 
     const osc = this.ctx.createOscillator();
     const gain = this.ctx.createGain();
@@ -215,8 +217,7 @@ class SoundService {
 
   public playSubmission() {
     if (this.isMuted) return;
-    this.initContext();
-    if (!this.ctx) return;
+    if (!this.initContext() || !this.ctx) return;
 
     const notes = [440, 554.37, 659.25, 880];
     notes.forEach((freq, idx) => {

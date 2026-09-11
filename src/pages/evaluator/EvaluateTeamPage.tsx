@@ -7,6 +7,7 @@ import { teamService } from '../../services/teamService';
 import { problemService } from '../../services/problemService';
 import { roundService } from '../../services/roundService';
 import { evaluationService } from '../../services/evaluationService';
+import { evaluatorService } from '../../services/evaluatorService';
 import { Team, ProblemStatement, Round, EvaluationCriterion } from '../../types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -37,6 +38,7 @@ export const EvaluateTeamPage: React.FC = () => {
   const [problem, setProblem] = useState<ProblemStatement | null>(null);
   const [round, setRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(true);
+  const [accessDenied, setAccessDenied] = useState(false);
 
   // Form states
   const [scores, setScores] = useState<Record<string, number>>({});
@@ -62,6 +64,20 @@ export const EvaluateTeamPage: React.FC = () => {
         roundService.getActiveRound(),
       ]);
 
+      const evaluator = user?.evaluatorId
+        ? await evaluatorService.getEvaluatorById(user.evaluatorId)
+        : null;
+      if (
+        !teamData ||
+        !roundData ||
+        !evaluator ||
+        !evaluator.assignedTeamIds.includes(teamId) ||
+        !evaluator.assignedRounds.includes(roundData.id)
+      ) {
+        setAccessDenied(true);
+        return;
+      }
+
       setTeam(teamData);
       setRound(roundData);
 
@@ -72,9 +88,10 @@ export const EvaluateTeamPage: React.FC = () => {
 
       // Check if existing evaluation exists
       if (teamData && roundData) {
-        const existing = await evaluationService.getEvaluationForTeamAndRound(
+        const existing = await evaluationService.getEvaluationForEvaluatorAndRound(
           teamData.id,
-          roundData.id
+          roundData.id,
+          evaluator.id
         );
         if (existing) {
           setScores(existing.scores);
@@ -153,10 +170,25 @@ export const EvaluateTeamPage: React.FC = () => {
     }
   };
 
-  if (loading || !team || !round) {
+  if (loading) {
     return (
       <div className="py-20 text-center">
         <div className="w-8 h-8 border-2 border-[#00b259] border-t-transparent rounded-full animate-spin mx-auto" />
+      </div>
+    );
+  }
+
+  if (accessDenied || !team || !round) {
+    return (
+      <div className="max-w-xl mx-auto py-16 text-center space-y-4">
+        <AlertTriangle className="w-10 h-10 text-amber-400 mx-auto" />
+        <h2 className="text-xl font-bold text-white">Evaluation access unavailable</h2>
+        <p className="text-xs text-gray-400">
+          This team or round is not assigned to your evaluator account.
+        </p>
+        <Button variant="secondary" onClick={() => navigate('/evaluator/teams')}>
+          Back to Assigned Teams
+        </Button>
       </div>
     );
   }
@@ -273,31 +305,25 @@ export const EvaluateTeamPage: React.FC = () => {
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
+                    <label htmlFor={`score-${criterion.id}`} className="text-[10px] font-mono uppercase tracking-wider text-gray-500">
+                      Enter score
+                    </label>
                     <input
+                      id={`score-${criterion.id}`}
                       type="number"
                       min={0}
                       max={criterion.maxScore}
+                      step={1}
                       value={currentScore}
                       onChange={(e) =>
                         handleScoreChange(criterion.id, parseInt(e.target.value, 10), criterion.maxScore)
                       }
-                      className="w-16 bg-[#060907] border border-[#213526] rounded-lg px-2 py-1 text-center font-mono font-bold text-sm text-[#00e575] focus:outline-none focus:border-[#00b259]"
+                      aria-label={`${criterion.name} score out of ${criterion.maxScore}`}
+                      className="w-20 bg-[#060907] border border-[#2c5138] rounded-lg px-2.5 py-2 text-center font-mono font-bold text-base text-[#00e575] focus:outline-none focus:border-[#00e575] focus:ring-2 focus:ring-[#00b259]/20"
                     />
                     <span className="text-xs font-mono text-gray-400">/ {criterion.maxScore}</span>
                   </div>
                 </div>
-
-                {/* Interactive Slider */}
-                <input
-                  type="range"
-                  min={0}
-                  max={criterion.maxScore}
-                  value={currentScore}
-                  onChange={(e) =>
-                    handleScoreChange(criterion.id, parseInt(e.target.value, 10), criterion.maxScore)
-                  }
-                  className="w-full accent-[#00b259] h-1.5 bg-[#142017] rounded-lg cursor-pointer"
-                />
               </Card>
             );
           })}

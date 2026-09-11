@@ -31,18 +31,42 @@ export const DEFAULT_COLUMN_MAPPING: ColumnMapping = {
 
 class ImportService {
   public parseCSVRaw(csvContent: string): { headers: string[]; rows: Record<string, string>[] } {
-    const lines = csvContent.split(/\r?\n/).filter((line) => line.trim().length > 0);
-    if (lines.length === 0) return { headers: [], rows: [] };
+    const records: string[][] = [];
+    let record: string[] = [];
+    let value = '';
+    let quoted = false;
 
-    const headers = lines[0].split(',').map((h) => h.trim().replace(/^["']|["']$/g, ''));
+    for (let index = 0; index < csvContent.length; index += 1) {
+      const character = csvContent[index];
+      const nextCharacter = csvContent[index + 1];
+      if (character === '"' && quoted && nextCharacter === '"') {
+        value += '"';
+        index += 1;
+      } else if (character === '"') {
+        quoted = !quoted;
+      } else if (character === ',' && !quoted) {
+        record.push(value.trim());
+        value = '';
+      } else if ((character === '\n' || character === '\r') && !quoted) {
+        if (character === '\r' && nextCharacter === '\n') index += 1;
+        record.push(value.trim());
+        if (record.some((cell) => cell.length > 0)) records.push(record);
+        record = [];
+        value = '';
+      } else {
+        value += character;
+      }
+    }
+
+    record.push(value.trim());
+    if (record.some((cell) => cell.length > 0)) records.push(record);
+    if (records.length === 0) return { headers: [], rows: [] };
+
+    const headers = records[0].map((header) => header.replace(/^["']|["']$/g, ''));
     const rows: Record<string, string>[] = [];
 
-    for (let i = 1; i < lines.length; i++) {
-      const currentLine = lines[i].trim();
-      if (!currentLine) continue;
-
-      // Handle simple CSV splitting
-      const values = currentLine.split(',').map((v) => v.trim().replace(/^["']|["']$/g, ''));
+    for (let i = 1; i < records.length; i++) {
+      const values = records[i];
       const rowObj: Record<string, string> = { _rowIndex: String(i + 1) };
 
       headers.forEach((header, index) => {
@@ -262,6 +286,7 @@ class ImportService {
         leaderName: leaderName || 'Team Leader',
         leaderEmail: leaderEmail || '',
         leaderPhone: '+91 90000 00000',
+        accessPassword: `GFG-${effectiveId}-26`,
         members,
         currentRound: 1,
         totalScore: 0,

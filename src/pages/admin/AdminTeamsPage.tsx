@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { teamService } from '../../services/teamService';
 import { problemService } from '../../services/problemService';
+import { evaluationService } from '../../services/evaluationService';
 import { Team, ProblemStatement } from '../../types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
@@ -26,6 +27,7 @@ export const AdminTeamsPage: React.FC = () => {
   const [collegeFilter, setCollegeFilter] = useState('ALL');
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [loading, setLoading] = useState(true);
+  const [evaluationStatus, setEvaluationStatus] = useState<Map<string, Set<number>>>(new Map());
 
   useEffect(() => {
     loadTeams();
@@ -34,12 +36,20 @@ export const AdminTeamsPage: React.FC = () => {
   const loadTeams = async () => {
     setLoading(true);
     try {
-      const [allTeams, allProblems] = await Promise.all([
+      const [allTeams, allProblems, evaluations] = await Promise.all([
         teamService.getAllTeams(),
         problemService.getAllProblems(),
+        evaluationService.getAllEvaluations(),
       ]);
       setTeams(allTeams);
       setProblems(new Map(allProblems.map((p) => [p.id, p.title])));
+      const status = new Map<string, Set<number>>();
+      evaluations.forEach((evaluation) => {
+        const rounds = status.get(evaluation.teamId) || new Set<number>();
+        rounds.add(evaluation.roundId);
+        status.set(evaluation.teamId, rounds);
+      });
+      setEvaluationStatus(status);
     } finally {
       setLoading(false);
     }

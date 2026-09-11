@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAudio } from '../../context/AudioContext';
-import { Music, Volume2, VolumeX, Sparkles } from 'lucide-react';
+import { Music, Volume2, VolumeX, SlidersHorizontal } from 'lucide-react';
 
 export const MusicPlayerToggle: React.FC = () => {
   const { isBgmPlaying, isMuted, volume, toggleBgm, toggleMute, setVolume } = useAudio();
@@ -47,10 +47,14 @@ export const MusicPlayerToggle: React.FC = () => {
       {/* Volume slider toggle button */}
       <button
         onClick={() => setShowVolumeSlider(!showVolumeSlider)}
-        className="text-[10px] font-mono text-gray-500 hover:text-gray-300 px-1"
+        className={`inline-flex items-center gap-1 rounded px-1.5 py-1 text-[10px] font-mono transition-colors ${
+          showVolumeSlider ? 'text-[#00e575] bg-[#00b259]/10' : 'text-gray-500 hover:text-gray-300'
+        }`}
         title="Adjust volume"
+        aria-label="Adjust volume"
       >
-        {Math.round(volume * 100)}%
+        <SlidersHorizontal className="w-3.5 h-3.5" />
+        <span className="hidden sm:inline">{Math.round(volume * 100)}%</span>
       </button>
 
       {showVolumeSlider && (

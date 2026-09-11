@@ -37,7 +37,7 @@ export const Input: React.FC<InputProps> = ({
           id={inputId}
           className={`w-full bg-[#0a0f0c] border ${
             error ? 'border-red-500 focus:ring-red-500' : 'border-[#1e2d23] focus:border-[#00b259] focus:ring-[#00b259]/30'
-          } rounded-lg px-3.5 py-2.5 text-sm text-gray-100 placeholder-gray-500 transition-all duration-150 focus:outline-none focus:ring-2 ${
+          } rounded-xl px-3.5 py-3 text-sm text-gray-100 placeholder-gray-600 transition-all duration-200 focus:outline-none focus:ring-2 bg-[#080e0a]/90 shadow-inner ${
             leftIcon ? 'pl-10' : ''
           } ${rightIcon ? 'pr-10' : ''} ${className}`}
           {...props}

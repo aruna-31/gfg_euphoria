@@ -131,6 +131,8 @@ export const TeamLeaderLoginPage: React.FC = () => {
           </div>
 
         </div>
+          </div>
+        </div>
       </div>
 
       <footer className="text-xs text-gray-500 font-mono text-center pt-4">

@@ -40,6 +40,7 @@ export interface Team {
   leaderName: string;
   leaderEmail: string;
   leaderPhone: string;
+  accessPassword?: string;
   members: Participant[];
   problemStatementId?: string;
   photoUrl?: string;
@@ -122,10 +123,12 @@ export interface Evaluator {
   expertise: string[];
   assignedTeamIds: string[];
   assignedRounds: number[];
+  assignedProblemStatementIds?: string[];
   completedCount: number;
   pendingCount: number;
   avatarUrl?: string;
   status: 'ACTIVE' | 'INACTIVE';
+  accessPassword?: string;
 }
 
 export interface LeaderboardEntry {

@@ -35,6 +35,23 @@ export const LiveLeaderboardPage: React.FC = () => {
     loadLeaderboard();
   }, [roundFilter]);
 
+  useEffect(() => {
+    return leaderboardService.subscribe(() => {
+      void loadLeaderboard();
+    });
+  }, [roundFilter]);
+
+  useEffect(() => {
+    const handleStorageChange = (event: StorageEvent) => {
+      if (event.key === 'gfg_teams_data' || event.key === 'gfg_evaluations_data') {
+        void loadLeaderboard();
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
+  }, [roundFilter]);
+
   const loadLeaderboard = async () => {
     try {
       const data = await leaderboardService.getLeaderboard(roundFilter);

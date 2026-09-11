@@ -37,13 +37,32 @@ class ReportService {
     const evaluations = await evaluationService.getAllEvaluations();
 
     const roundHeaders = rounds.map((r) => `Round ${r.id} Score`).join(',');
-    const headers = `Team ID,Team Name,College,${roundHeaders},Total Score,Rank,Evaluator Feedback\n`;
+    const evaluatorColumns = evaluations.filter(
+      (evaluation, index, all) =>
+        all.findIndex(
+          (candidate) =>
+            candidate.roundId === evaluation.roundId && candidate.evaluatorId === evaluation.evaluatorId
+        ) === index
+    );
+    const evaluatorHeaders = evaluatorColumns
+      .map((evaluation) => `R${evaluation.roundId} ${evaluation.evaluatorId} Score`)
+      .join(',');
+    const headers = `Team ID,Team Name,College,${roundHeaders},${evaluatorHeaders},Total Score,Rank,Evaluator Feedback\n`;
 
     const rows = teams.map((t) => {
       const rScores = rounds.map((r) => t.roundScores[r.id] || 0).join(',');
       const teamEvals = evaluations.filter((e) => e.teamId === t.id);
+      const evaluatorScores = evaluatorColumns
+        .map((column) => {
+          const evaluation = teamEvals.find(
+            (candidate) =>
+              candidate.roundId === column.roundId && candidate.evaluatorId === column.evaluatorId
+          );
+          return evaluation?.totalScore ?? '';
+        })
+        .join(',');
       const feedbackCombined = teamEvals.map((e) => `[R${e.roundId}]: ${e.feedback}`).join(' | ').replace(/"/g, '""');
-      return `"${t.id}","${t.name}","${t.college}",${rScores},"${t.totalScore}","${t.rank || '-'}","${feedbackCombined}"`;
+      return `"${t.id}","${t.name}","${t.college}",${rScores},${evaluatorScores},"${t.totalScore}","${t.rank || '-'}","${feedbackCombined}"`;
     });
 
     return headers + rows.join('\n');

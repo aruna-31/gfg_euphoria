@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { evaluatorService } from '../../services/evaluatorService';
+import { useNotification } from '../../context/NotificationContext';
 import { Evaluator } from '../../types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/Avatar';
-import { ShieldCheck, Mail, Building, Plus, Users } from 'lucide-react';
+import { ShieldCheck, Mail, Building, Plus, Users, UserX, UserCheck } from 'lucide-react';
 
 export const AdminEvaluatorsPage: React.FC = () => {
   const navigate = useNavigate();
   const [evaluators, setEvaluators] = useState<Evaluator[]>([]);
   const [loading, setLoading] = useState(true);
+  const { addToast } = useNotification();
+  const [showCreateForm, setShowCreateForm] = useState(false);
+  const [form, setForm] = useState({ name: '', email: '', designation: '', organization: '', accessPassword: 'eval123' });
 
   useEffect(() => {
     loadEvaluators();
@@ -25,6 +29,24 @@ export const AdminEvaluatorsPage: React.FC = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCreate = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      await evaluatorService.createEvaluator(form);
+      setForm({ name: '', email: '', designation: '', organization: '', accessPassword: 'eval123' });
+      setShowCreateForm(false);
+      await loadEvaluators();
+      addToast('SUCCESS', 'Evaluator account created. Assign teams from the workload panel.');
+    } catch (error) {
+      addToast('ALERT', error instanceof Error ? error.message : 'Could not create evaluator.');
+    }
+  };
+
+  const toggleStatus = async (evaluator: Evaluator) => {
+    await evaluatorService.setStatus(evaluator.id, evaluator.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE');
+    await loadEvaluators();
   };
 
   return (
@@ -50,7 +72,30 @@ export const AdminEvaluatorsPage: React.FC = () => {
         >
           Manage Assignments
         </Button>
+        <Button size="sm" variant="outline" onClick={() => setShowCreateForm((visible) => !visible)} leftIcon={<Plus className="w-3.5 h-3.5" />}>
+          Add Evaluator
+        </Button>
       </div>
+
+      {showCreateForm && (
+        <Card className="p-5">
+          <form onSubmit={handleCreate} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 items-end">
+            {([
+              ['name', 'Full name'],
+              ['email', 'Email'],
+              ['designation', 'Designation'],
+              ['organization', 'Organization'],
+              ['accessPassword', 'Temporary password'],
+            ] as const).map(([key, label]) => (
+              <label key={key} className="text-xs text-gray-300">
+                {label}
+                <input required value={form[key]} onChange={(event) => setForm({ ...form, [key]: event.target.value })} className="mt-1 w-full bg-[#060907] border border-[#203627] rounded-lg p-2 text-xs text-white" />
+              </label>
+            ))}
+            <Button type="submit" variant="primary">Create Account</Button>
+          </form>
+        </Card>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {evaluators.map((evaluator) => (
@@ -98,11 +143,14 @@ export const AdminEvaluatorsPage: React.FC = () => {
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#17251c] flex items-center justify-between text-xs">
+            <div className="mt-4 pt-3 border-t border-[#17251c] flex items-center justify-between gap-2 text-xs">
               <span className="text-[11px] font-mono text-gray-400">{evaluator.email}</span>
-              <Badge variant="green" size="sm">
-                ACTIVE
-              </Badge>
+              <div className="flex items-center gap-2">
+                <Badge variant={evaluator.status === 'ACTIVE' ? 'green' : 'amber'} size="sm">{evaluator.status}</Badge>
+                <button onClick={() => toggleStatus(evaluator)} className="p-1.5 text-gray-400 hover:text-white" title={evaluator.status === 'ACTIVE' ? 'Deactivate evaluator' : 'Activate evaluator'}>
+                  {evaluator.status === 'ACTIVE' ? <UserX className="w-3.5 h-3.5" /> : <UserCheck className="w-3.5 h-3.5" />}
+                </button>
+              </div>
             </div>
           </Card>
         ))}

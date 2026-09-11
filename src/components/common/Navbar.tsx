@@ -2,6 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { NotificationDropdown } from './NotificationDropdown';
+import { MusicPlayerToggle } from './MusicPlayerToggle';
 import { Avatar } from '../ui/Avatar';
 import { LogOut, Menu, X, ChevronRight } from 'lucide-react';
 

@@ -83,9 +83,9 @@ export const AdminDashboardPage: React.FC = () => {
           <p className="text-xs text-gray-300 mt-1 max-w-xl">
             Live records will appear here after teams, evaluator profiles, assignments, and evaluations are imported.
           </p>
-        </div>
+          </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="relative flex w-full lg:w-auto flex-wrap items-center gap-2.5">
           <Button
             size="sm"
             variant="outline"
@@ -104,6 +104,7 @@ export const AdminDashboardPage: React.FC = () => {
             Export Marksheet
           </Button>
         </div>
+      </div>
       </div>
 
       {/* Primary KPI Grid (6 Cards) */}

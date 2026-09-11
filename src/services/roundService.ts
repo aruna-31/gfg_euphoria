@@ -40,8 +40,14 @@ class RoundService {
     const idx = this.rounds.findIndex((r) => r.id === roundId);
     if (idx === -1) throw new Error(`Round ${roundId} not found`);
 
-    // If activating this round, ensure others in 'ACTIVE' are updated or kept appropriate
-    this.rounds[idx] = { ...this.rounds[idx], status };
+    if (status === 'ACTIVE') {
+      this.rounds = this.rounds.map((round, roundIndex) => ({
+        ...round,
+        status: roundIndex === idx ? 'ACTIVE' : round.status === 'ACTIVE' ? 'COMPLETED' : round.status,
+      }));
+    } else {
+      this.rounds[idx] = { ...this.rounds[idx], status };
+    }
     this.persist();
     return { ...this.rounds[idx] };
   }

@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { evaluatorService } from '../../services/evaluatorService';
 import { teamService } from '../../services/teamService';
+import { roundService } from '../../services/roundService';
+import { problemService } from '../../services/problemService';
 import { useNotification } from '../../context/NotificationContext';
 import { useAudio } from '../../context/AudioContext';
-import { Evaluator, Team } from '../../types';
+import { Evaluator, Team, Round, ProblemStatement } from '../../types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -16,8 +18,12 @@ export const AdminAssignmentsPage: React.FC = () => {
 
   const [evaluators, setEvaluators] = useState<Evaluator[]>([]);
   const [teams, setTeams] = useState<Team[]>([]);
+  const [rounds, setRounds] = useState<Round[]>([]);
+  const [problems, setProblems] = useState<ProblemStatement[]>([]);
   const [selectedEvalId, setSelectedEvalId] = useState<string>('');
   const [selectedTeamId, setSelectedTeamId] = useState<string>('');
+  const [selectedRoundId, setSelectedRoundId] = useState<string>('');
+  const [selectedProblemId, setSelectedProblemId] = useState<string>('');
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -27,14 +33,19 @@ export const AdminAssignmentsPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [evals, allTeams] = await Promise.all([
+      const [evals, allTeams, allRounds, allProblems] = await Promise.all([
         evaluatorService.getAllEvaluators(),
         teamService.getAllTeams(),
+        roundService.getAllRounds(),
+        problemService.getAllProblems(),
       ]);
       setEvaluators(evals);
       setTeams(allTeams);
+      setRounds(allRounds);
+      setProblems(allProblems);
       if (evals.length > 0) setSelectedEvalId(evals[0].id);
       if (allTeams.length > 0) setSelectedTeamId(allTeams[0].id);
+      if (allRounds.length > 0) setSelectedRoundId(String(allRounds[0].id));
     } finally {
       setLoading(false);
     }
@@ -44,7 +55,13 @@ export const AdminAssignmentsPage: React.FC = () => {
     if (!selectedEvalId || !selectedTeamId) return;
 
     try {
-      await evaluatorService.assignTeam(selectedEvalId, selectedTeamId);
+      const selectedTeam = teams.find((team) => team.id === selectedTeamId);
+      await evaluatorService.assignTeam(
+        selectedEvalId,
+        selectedTeamId,
+        selectedRoundId ? Number(selectedRoundId) : undefined,
+        selectedProblemId || selectedTeam?.problemStatementId
+      );
       const updatedEvals = await evaluatorService.getAllEvaluators();
       setEvaluators(updatedEvals);
       playSuccess();
@@ -96,6 +113,29 @@ export const AdminAssignmentsPage: React.FC = () => {
                   {e.name} ({e.assignedTeamIds.length} teams)
                 </option>
               ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-300 block mb-1">Round</label>
+            <select
+              value={selectedRoundId}
+              onChange={(e) => setSelectedRoundId(e.target.value)}
+              className="w-full bg-[#060907] border border-[#203627] rounded-lg p-2 text-xs text-white"
+            >
+              {rounds.map((round) => <option key={round.id} value={round.id}>Round {round.number}: {round.name}</option>)}
+            </select>
+          </div>
+
+          <div>
+            <label className="text-xs font-semibold text-gray-300 block mb-1">Problem track</label>
+            <select
+              value={selectedProblemId}
+              onChange={(e) => setSelectedProblemId(e.target.value)}
+              className="w-full bg-[#060907] border border-[#203627] rounded-lg p-2 text-xs text-white"
+            >
+              <option value="">Use team&apos;s selected track</option>
+              {problems.map((problem) => <option key={problem.id} value={problem.id}>{problem.id} - {problem.title}</option>)}
             </select>
           </div>
 

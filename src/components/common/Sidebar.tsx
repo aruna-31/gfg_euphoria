@@ -118,6 +118,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <span className="text-[10px] font-mono uppercase tracking-wider text-pink-600 font-bold">
               {getPortalLabel()}
             </span>
+            <span className="mt-1 block text-[10px] text-gray-600">Workspace navigation</span>
           </div>
 
           <nav className="space-y-1">
@@ -126,8 +127,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 key={link.to}
                 to={link.to}
                 onClick={onCloseMobile}
-                className={({ isActive }) =>
-                  `flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all ${
+                    className={({ isActive }) =>
+                      `relative flex items-center gap-3 px-3.5 py-3 rounded-xl text-xs font-medium transition-all duration-200 ${
                     isActive
                       ? 'bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold shadow-md shadow-pink-500/20'
                       : 'text-slate-300 hover:text-pink-600 hover:bg-[#243247]'
