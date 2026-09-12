@@ -2,7 +2,7 @@ import React from 'react';
 import { useAudio } from '../../context/AudioContext';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'outline' | 'danger' | 'ghost' | 'gfg';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -24,25 +24,27 @@ export const Button: React.FC<ButtonProps> = ({
   const { playClick } = useAudio();
 
   const baseStyles =
-    'inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus:ring-2 focus:ring-offset-1 focus:ring-pink-300';
+    'inline-flex items-center justify-center font-bold rounded-xl transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500/50';
 
   const sizeStyles = {
-    sm: 'text-xs px-3 py-1.5 gap-1.5',
-    md: 'text-sm px-4 py-2 gap-2',
+    sm: 'text-xs px-3.5 py-1.5 gap-1.5',
+    md: 'text-sm px-4.5 py-2 gap-2',
     lg: 'text-base px-6 py-2.5 gap-2.5',
   };
 
   const variantStyles = {
     primary:
-      'bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white shadow-md shadow-pink-500/20 active:scale-[0.98]',
+      'bg-gradient-to-r from-[#2F8D46] via-[#22C55E] to-[#10B981] hover:from-[#247338] hover:via-[#16A34A] hover:to-[#059669] text-white shadow-lg shadow-emerald-900/30 hover:shadow-emerald-600/40 active:scale-[0.98]',
+    gfg:
+      'bg-[#2F8D46] hover:bg-[#247338] text-white shadow-lg shadow-emerald-950/40 hover:shadow-emerald-500/20 active:scale-[0.98]',
     secondary:
-      'bg-pink-50 hover:bg-pink-100 text-pink-700 border border-pink-200 hover:border-pink-400 active:scale-[0.98]',
+      'bg-emerald-950/70 hover:bg-emerald-900/80 text-emerald-300 border border-emerald-500/30 hover:border-emerald-400/60 active:scale-[0.98]',
     outline:
-      'bg-white hover:bg-pink-50 text-pink-600 border border-pink-300 hover:border-pink-500 active:scale-[0.98]',
+      'bg-transparent hover:bg-emerald-500/10 text-emerald-400 border border-emerald-500/40 hover:border-emerald-400 active:scale-[0.98]',
     danger:
-      'bg-rose-50 hover:bg-rose-100 text-rose-600 border border-rose-200 hover:border-rose-400 active:scale-[0.98]',
+      'bg-rose-950/60 hover:bg-rose-900/70 text-rose-300 border border-rose-500/30 hover:border-rose-400 active:scale-[0.98]',
     ghost:
-      'bg-transparent hover:bg-pink-50 text-gray-700 hover:text-pink-600 active:scale-[0.98]',
+      'bg-transparent hover:bg-slate-800/60 text-slate-300 hover:text-emerald-400 active:scale-[0.98]',
   };
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {

@@ -117,7 +117,7 @@ export const AdminReportsPage: React.FC = () => {
         {/* Report 3: Participants List */}
         <Card className="p-5 flex flex-col justify-between space-y-4">
           <div>
-            <div className="w-12 h-12 rounded-xl bg-[#142217] border border-[#203627] flex items-center justify-center text-purple-400 mb-3">
+            <div className="w-12 h-12 rounded-xl bg-[#0F1E2E] border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3">
               <Users className="w-6 h-6" />
             </div>
             <h3 className="text-base font-bold text-white">Participant Master Registry</h3>

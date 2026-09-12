@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { useNotification } from '../../context/NotificationContext';
 import { LoginGfgBackground } from '../../components/common/LoginGfgBackground';
-import { Award, Mail, Lock, ArrowRight, AlertTriangle } from 'lucide-react';
+import { Footer } from '../../components/common/Footer';
+import { Button } from '../../components/ui/Button';
+import { Award, Mail, Lock, ArrowRight, AlertTriangle, ArrowLeft } from 'lucide-react';
 
 export const EvaluatorLoginPage: React.FC = () => {
   const navigate = useNavigate();
@@ -33,98 +35,110 @@ export const EvaluatorLoginPage: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#FAF8FA] text-[#1E1920] flex flex-col justify-between p-4 sm:p-6 lg:p-8 cyber-grid relative overflow-hidden">
+    <div className="min-h-screen bg-[#0B131E] text-slate-100 flex flex-col justify-between relative overflow-hidden cyber-mesh">
       <LoginGfgBackground />
-      <div className="relative z-10 max-w-md w-full mx-auto text-left my-auto">
-        <div className="bg-white border border-[#F3E8FF] rounded-2xl p-6 sm:p-8 shadow-xl shadow-amber-500/5">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-100">
+
+      {/* Top Bar */}
+      <div className="relative z-10 p-4 sm:p-6 max-w-md w-full mx-auto flex items-center justify-between">
+        <button
+          onClick={() => navigate('/')}
+          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-400 font-mono transition-colors cursor-pointer"
+        >
+          <ArrowLeft className="w-4 h-4" />
+          <span>Back to Gateways</span>
+        </button>
+
+        <span className="text-[11px] font-mono text-amber-400 font-bold bg-amber-950/80 px-2.5 py-1 rounded-full border border-amber-500/30">
+          Jury Panel Access
+        </span>
+      </div>
+
+      <div className="relative z-10 max-w-md w-full mx-auto px-4 py-4 text-left my-auto">
+        <div className="bg-[#0F1E2E]/90 border border-amber-500/30 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-amber-950/80 backdrop-blur-xl">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-500/20">
             <div className="flex items-center gap-3">
-              <div className="p-3 rounded-xl bg-amber-50 text-amber-600 border border-amber-200">
-                <Award className="w-6 h-6" />
+              <div className="w-12 h-12 rounded-xl bg-white p-1.5 flex items-center justify-center shadow-md shrink-0">
+                <img
+                  src="/logos/gfg_kare_logo.png"
+                  alt="GeeksforGeeks Campus Body KARE"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
-                <h1 className="text-xl font-bold text-gray-900">Evaluator Portal</h1>
-                <p className="text-xs text-gray-500">Jury & Faculty Assessment Panel</p>
+                <h1 className="text-lg font-bold text-white">Evaluator Portal</h1>
+                <p className="text-xs text-amber-400 font-mono">Faculty & Jury Assessment Panel</p>
               </div>
             </div>
-            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-300 text-amber-700 bg-amber-50">
+            <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded border border-amber-500/40 text-amber-300 bg-amber-950/80">
               EVALUATOR
             </span>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Evaluator / Jury Email
               </label>
               <div className="relative">
-                <Mail className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
+                <Mail className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   placeholder="evaluator@gfgkare.in"
-                  className="w-full bg-[#FAF8FA] border border-amber-200 rounded-xl pl-9 pr-3 py-2.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 font-mono"
+                  className="w-full bg-[#0B1520] border border-slate-700/60 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-gray-700 mb-1.5">
+              <label className="block text-xs font-semibold text-slate-300 mb-1.5">
                 Jury Security Passcode
               </label>
               <div className="relative">
-                <Lock className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
+                <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-3" />
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
-                  placeholder="Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢Ã¢â‚¬Â¢"
-                  className="w-full bg-[#FAF8FA] border border-amber-200 rounded-xl pl-9 pr-3 py-2.5 text-xs text-gray-900 placeholder-gray-400 focus:outline-none focus:border-amber-500 font-mono"
+                  placeholder="••••••••••••"
+                  className="w-full bg-[#0B1520] border border-slate-700/60 rounded-xl pl-9 pr-3 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500 font-mono"
                 />
               </div>
             </div>
 
             {error && (
-              <div className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-xs text-amber-800 flex items-start gap-2">
-                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-amber-600" />
+              <div className="p-3 rounded-xl bg-rose-950/80 border border-rose-500/40 text-xs text-rose-300 flex items-start gap-2">
+                <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
                 <span>{error}</span>
               </div>
             )}
 
-            <button
+            <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full mt-2 py-3 px-4 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-amber-500/20 disabled:opacity-50"
+              className="w-full mt-2 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-700 hover:to-amber-600 text-white shadow-lg shadow-amber-950/40"
+              rightIcon={<ArrowRight className="w-4 h-4" />}
             >
-              {isSubmitting ? (
-                <span>Authenticating Jury...</span>
-              ) : (
-                <>
-                  <span>Enter Evaluator Portal</span>
-                  <ArrowRight className="w-4 h-4" />
-                </>
-              )}
-            </button>
+              {isSubmitting ? 'Authenticating Jury...' : 'Enter Evaluator Portal'}
+            </Button>
           </form>
 
-          <div className="mt-5 pt-4 border-t border-amber-100 text-center">
+          <div className="mt-5 pt-4 border-t border-amber-500/15 text-center">
             <button
               type="button"
               onClick={() => navigate('/login/admin')}
-              className="text-xs text-amber-700 hover:underline font-semibold"
+              className="text-xs text-amber-400 hover:text-amber-300 font-bold hover:underline cursor-pointer"
             >
-              Switch to Administrator Console Login Ã¢â€ â€™
+              Switch to Administrator Console Login →
             </button>
           </div>
         </div>
       </div>
 
-      <footer className="text-xs text-gray-500 font-mono text-center pt-4">
-        Ã‚Â© 2026 Euphoria Hackathon Platform Ã¢â‚¬Â¢ Evaluator Assessment Desk
-      </footer>
+      <Footer />
     </div>
   );
 };

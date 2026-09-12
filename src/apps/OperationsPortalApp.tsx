@@ -27,6 +27,8 @@ import { CSVImportPage } from '../pages/admin/CSVImportPage';
 
 import { AdminReportsPage } from '../pages/admin/AdminReportsPage';
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
+import { ClubPartnersMarquee } from '../components/common/ClubPartnersMarquee';
+import { Footer } from '../components/common/Footer';
 
 const OperationsHome: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -37,7 +39,56 @@ const OperationsHome: React.FC = () => {
 
 const OperationsLogin: React.FC = () => {
   const navigate = useNavigate();
-  return <main className="min-h-screen bg-[#FAF8FA] flex items-center justify-center p-6 cyber-grid relative overflow-hidden"><LoginGfgBackground /><section className="relative z-10 w-full max-w-2xl text-center"><p className="text-xs font-mono text-purple-600 mb-3">HACKODESSEY 4.0 OPERATIONS</p><h1 className="text-3xl font-black text-gray-900">Admin & Evaluator Portal</h1><p className="text-sm text-gray-600 mt-3">Use your organisation-provided account. No demo accounts are available.</p><div className="grid sm:grid-cols-2 gap-4 mt-8 text-left"><button onClick={() => navigate('/login/evaluator')} className="p-6 rounded-2xl border border-amber-200 bg-white hover:border-amber-500"><Award className="text-amber-600 mb-3" /><strong>Evaluator login</strong><span className="block text-xs text-gray-500 mt-1">Assess assigned teams and submit scores.</span></button><button onClick={() => navigate('/login/admin')} className="p-6 rounded-2xl border border-purple-200 bg-white hover:border-purple-500"><Shield className="text-purple-600 mb-3" /><strong>Administrator login</strong><span className="block text-xs text-gray-500 mt-1">Manage the hackathon and evaluator assignments.</span></button></div></section></main>;
+  return (
+    <main className="min-h-screen bg-[#0A111A] text-slate-100 flex flex-col justify-between p-6 cyber-grid relative overflow-hidden">
+      <LoginGfgBackground />
+      <div className="my-auto relative z-10 w-full max-w-2xl mx-auto text-center py-10">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F1E2E] border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4 shadow-lg">
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
+          HACKODESSEY 4.0 OPERATIONS
+        </div>
+        <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-400 via-green-300 to-cyan-400 bg-clip-text text-transparent">
+          Admin & Evaluator Portal
+        </h1>
+        <p className="text-sm text-slate-400 mt-3 max-w-md mx-auto">
+          Authorized console for jury evaluation and hackathon governance. Powered by GeeksforGeeks.
+        </p>
+
+        <div className="grid sm:grid-cols-2 gap-4 mt-8 text-left">
+          <button
+            onClick={() => navigate('/login/evaluator')}
+            className="p-6 rounded-2xl border border-emerald-500/20 bg-[#0F1E2E]/80 hover:bg-[#132538] hover:border-emerald-500/50 transition-all duration-300 shadow-xl backdrop-blur-xl group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
+              <Award className="w-6 h-6" />
+            </div>
+            <strong className="block text-slate-100 text-base group-hover:text-emerald-300 transition-colors">Evaluator Login</strong>
+            <span className="block text-xs text-slate-400 mt-1">
+              Assess assigned squads, review problem statements, and submit scores.
+            </span>
+          </button>
+
+          <button
+            onClick={() => navigate('/login/admin')}
+            className="p-6 rounded-2xl border border-cyan-500/20 bg-[#0F1E2E]/80 hover:bg-[#132538] hover:border-cyan-500/50 transition-all duration-300 shadow-xl backdrop-blur-xl group cursor-pointer"
+          >
+            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3 group-hover:scale-110 transition-transform">
+              <Shield className="w-6 h-6" />
+            </div>
+            <strong className="block text-slate-100 text-base group-hover:text-cyan-300 transition-colors">Administrator Login</strong>
+            <span className="block text-xs text-slate-400 mt-1">
+              Manage hackathon rounds, capacity locks, teams, and live metrics.
+            </span>
+          </button>
+        </div>
+
+        <div className="mt-12">
+          <ClubPartnersMarquee />
+        </div>
+      </div>
+      <Footer />
+    </main>
+  );
 };
 
 const OperationsRoutes: React.FC = () => (

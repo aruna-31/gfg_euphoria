@@ -400,7 +400,7 @@ export const TeamDashboardPage: React.FC = () => {
           onClick={() => navigate('/team/profile')}
           className="p-3.5 rounded-xl bg-[#0e1612] hover:bg-[#142018] border border-[#1e2e23] hover:border-[#00b259]/40 text-left transition-all group cursor-pointer"
         >
-          <Users className="w-5 h-5 text-purple-400 mb-2 group-hover:scale-110 transition-transform" />
+          <Users className="w-5 h-5 text-cyan-400 mb-2 group-hover:scale-110 transition-transform" />
           <p className="text-xs font-bold text-gray-200">Team Roster</p>
           <p className="text-[10px] text-gray-400 mt-0.5">Member credentials & roles</p>
         </button>
