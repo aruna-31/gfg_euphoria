@@ -5,6 +5,7 @@ A centralized, production-quality **Hackathon Management & Evaluation Platform**
 ---
 
 ## 🛠️ Tech Stack
+//uvicorn app.main:app --reload
 
 - **Framework**: React 19 + TypeScript + Vite 8
 - **Styling**: Tailwind CSS v4 (Custom GFG dark emerald design system)
