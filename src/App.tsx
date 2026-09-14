@@ -20,7 +20,6 @@ import { AdminLoginPage } from './pages/auth/AdminLoginPage';
 import { LeaderDashboardPage } from './pages/leader/LeaderDashboardPage';
 import { ProblemSelectionPage } from './pages/participant/ProblemSelectionPage';
 import { UploadPhotoPage } from './pages/participant/UploadPhotoPage';
-import { RoundStatusPage } from './pages/participant/RoundStatusPage';
 import { LiveLeaderboardPage } from './pages/participant/LiveLeaderboardPage';
 import { TeamProfilePage } from './pages/participant/TeamProfilePage';
 
@@ -119,14 +118,7 @@ function MainApp() {
                 </ProtectedRoute>
               }
             />
-            <Route
-              path="/team/round-status"
-              element={
-                <ProtectedRoute allowedRoles={['LEADER']}>
-                  <RoundStatusPage />
-                </ProtectedRoute>
-              }
-            />
+
             <Route
               path="/team/leaderboard"
               element={

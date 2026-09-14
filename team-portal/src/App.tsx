@@ -12,7 +12,6 @@ import { TeamRegisterPage } from './pages/auth/TeamRegisterPage';
 import { LeaderDashboardPage } from './pages/leader/LeaderDashboardPage';
 import { ProblemSelectionPage } from './pages/participant/ProblemSelectionPage';
 import { UploadPhotoPage } from './pages/participant/UploadPhotoPage';
-import { RoundStatusPage } from './pages/participant/RoundStatusPage';
 import { LiveLeaderboardPage } from './pages/participant/LiveLeaderboardPage';
 import { TeamProfilePage } from './pages/participant/TeamProfilePage';
 
@@ -36,8 +35,6 @@ const TeamRoutes: React.FC = () => (
         <Route path="/problem-statement" element={<ProtectedRoute allowedRoles={['LEADER']}><ProblemSelectionPage /></ProtectedRoute>} />
         <Route path="/team/photo" element={<ProtectedRoute allowedRoles={['LEADER']}><UploadPhotoPage /></ProtectedRoute>} />
         <Route path="/photo" element={<ProtectedRoute allowedRoles={['LEADER']}><UploadPhotoPage /></ProtectedRoute>} />
-        <Route path="/team/round-status" element={<ProtectedRoute allowedRoles={['LEADER']}><RoundStatusPage /></ProtectedRoute>} />
-        <Route path="/round-status" element={<ProtectedRoute allowedRoles={['LEADER']}><RoundStatusPage /></ProtectedRoute>} />
         <Route path="/team/leaderboard" element={<ProtectedRoute allowedRoles={['LEADER']}><LiveLeaderboardPage /></ProtectedRoute>} />
         <Route path="/leaderboard" element={<ProtectedRoute allowedRoles={['LEADER']}><LiveLeaderboardPage /></ProtectedRoute>} />
         <Route path="/team/profile" element={<ProtectedRoute allowedRoles={['LEADER']}><TeamProfilePage /></ProtectedRoute>} />

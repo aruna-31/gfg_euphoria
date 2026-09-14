@@ -49,7 +49,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { to: '/team/dashboard', label: 'Dashboard', icon: <LayoutDashboard className="w-4 h-4" /> },
     { to: '/team/problem-statement', label: 'Problem Statement', icon: <FileCode2 className="w-4 h-4" /> },
     { to: '/team/photo', label: 'Squad Photo', icon: <Image className="w-4 h-4" /> },
-    { to: '/team/round-status', label: 'Round Status', icon: <Clock className="w-4 h-4" /> },
     { to: '/team/profile', label: 'Team Profile', icon: <Users className="w-4 h-4" /> },
   ];
 
