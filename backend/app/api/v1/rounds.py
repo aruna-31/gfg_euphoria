@@ -25,16 +25,38 @@ def get_all_rounds(db: Session = Depends(get_db)):
         } for r in rounds
     ]
 
-@router.get("/announcements", response_model=List[Dict[str, Any]])
-def get_announcements(db: Session = Depends(get_db)):
-    ann = db.query(AnnouncementDB).all()
-    return [
-        {
-            "id": a.id,
-            "title": a.title,
-            "content": a.content,
-            "category": a.category,
-            "timestamp": a.timestamp.isoformat(),
-            "author": a.author
-        } for a in ann
-    ]
+@router.put("/{round_id}/status")
+def update_round_status(round_id: int, status_update: Dict[str, str], db: Session = Depends(get_db)):
+    status_val = status_update.get("status", "").upper()
+    if status_val not in {"UPCOMING", "ACTIVE", "COMPLETED"}:
+        return {"error": "Status must be UPCOMING, ACTIVE, or COMPLETED"}
+    
+    round_obj = db.query(RoundDB).filter(RoundDB.id == round_id).first()
+    if not round_obj:
+        return {"error": f"Round {round_id} not found"}
+    
+    round_obj.status = status_val
+    db.commit()
+    return {"status": "success", "round_id": round_id, "new_status": status_val}
+
+@router.post("/reset")
+def reset_rounds_status(db: Session = Depends(get_db)):
+    """
+    Resets rounds to standard initial state:
+    Round 1 -> ACTIVE
+    Round 2 -> UPCOMING
+    Round 3 -> UPCOMING
+    """
+    r1 = db.query(RoundDB).filter(RoundDB.id == 1).first()
+    if r1:
+        r1.status = "ACTIVE"
+    r2 = db.query(RoundDB).filter(RoundDB.id == 2).first()
+    if r2:
+        r2.status = "UPCOMING"
+    r3 = db.query(RoundDB).filter(RoundDB.id == 3).first()
+    if r3:
+        r3.status = "UPCOMING"
+    
+    db.commit()
+    return {"status": "success", "message": "All rounds have been reset: Round 1 (ACTIVE), Round 2 (UPCOMING), Round 3 (UPCOMING)."}
+
