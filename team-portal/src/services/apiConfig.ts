@@ -16,19 +16,8 @@ export const getApiBaseUrl = (): string => {
       : `${trimmed}/api/v1`;
   }
 
-  // 2. Browser runtime in production or production build -> Render production URL
-  if (
-    import.meta.env.PROD ||
-    (typeof window !== 'undefined' &&
-      window.location.hostname !== 'localhost' &&
-      window.location.hostname !== '127.0.0.1' &&
-      !window.location.hostname.endsWith('.local'))
-  ) {
-    return 'https://gfg-euphoria.onrender.com/api/v1';
-  }
-
-  // 3. Local development fallback
-  return 'http://localhost:8000/api/v1';
+  // 2. Default everywhere (both local dev and production) to live Render backend
+  return 'https://gfg-euphoria.onrender.com/api/v1';
 };
 
 export const API_BASE_URL: string = getApiBaseUrl();
