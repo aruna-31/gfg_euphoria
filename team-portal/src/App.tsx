@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { AudioProvider } from './context/AudioContext';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { CinematicIntro } from './components/common/CinematicIntro';
+import { TeamLandingPage } from './pages/landing/TeamLandingPage';
 import { TeamLeaderLoginPage } from './pages/auth/TeamLeaderLoginPage';
 import { TeamRegisterPage } from './pages/auth/TeamRegisterPage';
 import { LeaderDashboardPage } from './pages/leader/LeaderDashboardPage';
@@ -15,21 +16,19 @@ import { RoundStatusPage } from './pages/participant/RoundStatusPage';
 import { LiveLeaderboardPage } from './pages/participant/LiveLeaderboardPage';
 import { TeamProfilePage } from './pages/participant/TeamProfilePage';
 
-const TeamHome: React.FC = () => {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return null;
-  return <Navigate to={user?.role === 'LEADER' ? '/team/dashboard' : '/team/login'} replace />;
-};
-
 const TeamRoutes: React.FC = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<TeamHome />} />
+      {/* Cinematic Showcase Landing Page */}
+      <Route path="/" element={<TeamLandingPage />} />
+
+      {/* Dedicated Authentication Gateways */}
       <Route path="/team/login" element={<TeamLeaderLoginPage />} />
       <Route path="/login" element={<TeamLeaderLoginPage />} />
       <Route path="/team/register" element={<TeamRegisterPage />} />
       <Route path="/register" element={<TeamRegisterPage />} />
 
+      {/* Protected Squad Workspaces */}
       <Route element={<AppLayout />}>
         <Route path="/team/dashboard" element={<ProtectedRoute allowedRoles={['LEADER']}><LeaderDashboardPage /></ProtectedRoute>} />
         <Route path="/dashboard" element={<ProtectedRoute allowedRoles={['LEADER']}><LeaderDashboardPage /></ProtectedRoute>} />
@@ -45,13 +44,13 @@ const TeamRoutes: React.FC = () => (
         <Route path="/profile" element={<ProtectedRoute allowedRoles={['LEADER']}><TeamProfilePage /></ProtectedRoute>} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/team/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </BrowserRouter>
 );
 
 export const App: React.FC = () => {
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   return (
     <AuthProvider>
       <NotificationProvider>

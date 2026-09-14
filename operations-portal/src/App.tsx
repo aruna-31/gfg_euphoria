@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-import { Shield, Award } from 'lucide-react';
-import { AuthProvider, useAuth } from './context/AuthContext';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { AudioProvider } from './context/AudioContext';
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { CinematicIntro } from './components/common/CinematicIntro';
-import { LoginGfgBackground } from './components/common/LoginGfgBackground';
-import { Footer } from './components/common/Footer';
+import { OperationsLandingPage } from './pages/landing/OperationsLandingPage';
 import { EvaluatorLoginPage } from './pages/auth/EvaluatorLoginPage';
 import { AdminLoginPage } from './pages/auth/AdminLoginPage';
 import { EvaluatorDashboardPage } from './pages/evaluator/EvaluatorDashboardPage';
@@ -28,74 +26,20 @@ import { CSVImportPage } from './pages/admin/CSVImportPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
 
-const OperationsHome: React.FC = () => {
-  const { user, isLoading } = useAuth();
-  if (isLoading) return null;
-  if (user?.role === 'ADMIN') return <Navigate to="/admin/dashboard" replace />;
-  if (user?.role === 'EVALUATOR') return <Navigate to="/evaluator/dashboard" replace />;
-  return <Navigate to="/login" replace />;
-};
-
-const OperationsLogin: React.FC = () => {
-  const navigate = useNavigate();
-  return (
-    <main className="min-h-screen bg-[#0A111A] text-slate-100 flex flex-col justify-between p-6 cyber-grid relative overflow-hidden">
-      <LoginGfgBackground />
-      <div className="my-auto relative z-10 w-full max-w-2xl mx-auto text-center py-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#0F1E2E] border border-emerald-500/30 text-emerald-300 text-xs font-mono mb-4 shadow-lg">
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
-          HACKODESSEY 4.0 OPERATIONS
-        </div>
-        <h1 className="text-3xl sm:text-4xl font-black bg-gradient-to-r from-emerald-400 via-green-300 to-cyan-400 bg-clip-text text-transparent">
-          Admin & Evaluator Portal
-        </h1>
-        <p className="text-sm text-slate-400 mt-3 max-w-md mx-auto">
-          Authorized console for jury evaluation and hackathon governance. Powered by GeeksforGeeks.
-        </p>
-
-        <div className="grid sm:grid-cols-2 gap-4 mt-8 text-left">
-          <button
-            onClick={() => navigate('/login/evaluator')}
-            className="p-6 rounded-2xl border border-emerald-500/20 bg-[#0F1E2E]/80 hover:bg-[#132538] hover:border-emerald-500/50 transition-all duration-300 shadow-xl backdrop-blur-xl group cursor-pointer"
-          >
-            <div className="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400 mb-3 group-hover:scale-110 transition-transform">
-              <Award className="w-6 h-6" />
-            </div>
-            <strong className="block text-slate-100 text-base group-hover:text-emerald-300 transition-colors">Evaluator Login</strong>
-            <span className="block text-xs text-slate-400 mt-1">
-              Assess assigned squads, review problem statements, and submit scores.
-            </span>
-          </button>
-
-          <button
-            onClick={() => navigate('/login/admin')}
-            className="p-6 rounded-2xl border border-cyan-500/20 bg-[#0F1E2E]/80 hover:bg-[#132538] hover:border-cyan-500/50 transition-all duration-300 shadow-xl backdrop-blur-xl group cursor-pointer"
-          >
-            <div className="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400 mb-3 group-hover:scale-110 transition-transform">
-              <Shield className="w-6 h-6" />
-            </div>
-            <strong className="block text-slate-100 text-base group-hover:text-cyan-300 transition-colors">Administrator Login</strong>
-            <span className="block text-xs text-slate-400 mt-1">
-              Manage hackathon rounds, capacity locks, teams, and live metrics.
-            </span>
-          </button>
-        </div>
-      </div>
-      <Footer />
-    </main>
-  );
-};
-
 const OperationsRoutes: React.FC = () => (
   <BrowserRouter>
     <Routes>
-      <Route path="/" element={<OperationsHome />} />
-      <Route path="/login" element={<OperationsLogin />} />
+      {/* Cinematic Showcase Landing Page */}
+      <Route path="/" element={<OperationsLandingPage />} />
+      <Route path="/login" element={<OperationsLandingPage />} />
+
+      {/* Dedicated Authentication Gateways */}
       <Route path="/login/evaluator" element={<EvaluatorLoginPage />} />
       <Route path="/evaluator/login" element={<EvaluatorLoginPage />} />
       <Route path="/login/admin" element={<AdminLoginPage />} />
       <Route path="/admin/login" element={<AdminLoginPage />} />
 
+      {/* Protected Operations Workspaces */}
       <Route element={<AppLayout />}>
         {/* Evaluator Routes */}
         <Route path="/evaluator/dashboard" element={<ProtectedRoute allowedRoles={['EVALUATOR']}><EvaluatorDashboardPage /></ProtectedRoute>} />
@@ -119,13 +63,13 @@ const OperationsRoutes: React.FC = () => (
         <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminSettingsPage /></ProtectedRoute>} />
       </Route>
 
-      <Route path="*" element={<Navigate to="/login" replace />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   </BrowserRouter>
 );
 
 export const App: React.FC = () => {
-  const [showIntro, setShowIntro] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
   return (
     <AuthProvider>
       <NotificationProvider>
