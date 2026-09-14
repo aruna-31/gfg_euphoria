@@ -202,6 +202,18 @@ def login_admin(req: LoginRequest, db: Session = Depends(get_db)):
         }
     }
 
+@router.post("/seed-sync")
+def sync_seed(db: Session = Depends(get_db)):
+    """
+    Sync all CSV files (team leaders, evaluators, admins, problems, rounds) into database
+    """
+    try:
+        from seed import seed_database
+        seed_database()
+        return {"status": "success", "message": "Database successfully synced from CSV datasets."}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Seed sync error: {str(e)}")
+
 @router.post("/import-credentials")
 def import_credentials(req: CredentialCsvImportRequest, db: Session = Depends(get_db)):
     account_type = req.account_type.strip().upper()
@@ -209,37 +221,99 @@ def import_credentials(req: CredentialCsvImportRequest, db: Session = Depends(ge
         raise HTTPException(status_code=400, detail="account_type must be LEADER, EVALUATOR, or ADMIN.")
 
     rows = csv.DictReader(StringIO(req.csv_content))
-    headers = {str(header).strip().lower() for header in (rows.fieldnames or [])}
-    required = {"email", "name", "password"}
-    if not required.issubset(headers):
-        raise HTTPException(status_code=400, detail="CSV must include email, name, password columns.")
-    if account_type == "LEADER" and not {"team_id", "team_name"}.issubset(headers):
-        raise HTTPException(status_code=400, detail="Leader CSV must also include team_id and team_name columns.")
-
     imported, skipped, errors = 0, 0, []
+    
     for row_number, row in enumerate(rows, start=2):
-        data = {str(key).strip().lower(): (value or "").strip() for key, value in row.items()}
-        email, name, password = data.get("email", "").lower(), data.get("name", ""), data.get("password", "")
-        if not email or not name or not password:
-            errors.append({"row": row_number, "message": "email, name, and password are required"})
+        row_map = {str(k).strip().lower(): (v or "").strip() for k, v in row.items() if k}
+        
+        email = (
+            row_map.get("registered email id") or 
+            row_map.get("email") or 
+            row_map.get("leader email") or 
+            row_map.get("evaluator") or 
+            row_map.get("admin") or ""
+        ).lower()
+        
+        password = row_map.get("password") or row_map.get("pass") or ""
+        name = (
+            row_map.get("team leader's name") or 
+            row_map.get("name") or 
+            row_map.get("evaluator name") or 
+            row_map.get("admin name") or 
+            (email.split("@")[0].title() if email else "User")
+        )
+        college = (
+            row_map.get("college name") or 
+            row_map.get("college") or 
+            row_map.get("organization") or 
+            row_map.get("department") or 
+            "KARE"
+        )
+        phone = row_map.get("phone") or row_map.get("leader phone") or None
+
+        if not email or not password or "@" not in email:
+            errors.append({"row": row_number, "message": "Valid email and password are required"})
             continue
-        if db.query(UserDB).filter(UserDB.email == email).first():
+
+        existing_user = db.query(UserDB).filter(UserDB.email == email).first()
+        if existing_user:
+            existing_user.hashed_password = get_password_hash(password)
+            existing_user.name = name
+            existing_user.role = account_type
+            existing_user.college = college
+            if phone:
+                existing_user.phone = phone
+            user_id = existing_user.id
             skipped += 1
-            continue
+        else:
+            user_id = f"usr-{uuid.uuid4().hex[:10]}"
+            new_user = UserDB(
+                id=user_id,
+                email=email,
+                hashed_password=get_password_hash(password),
+                name=name,
+                role=account_type,
+                college=college,
+                phone=phone
+            )
+            db.add(new_user)
+            imported += 1
 
-        user_id = f"usr-{uuid.uuid4().hex[:10]}"
-        college = data.get("college") or "Not supplied"
-        team_id, team_name = data.get("team_id", ""), data.get("team_name", "")
-        if account_type == "LEADER" and (not team_id or not team_name or db.query(TeamDB).filter(TeamDB.id == team_id).first()):
-            errors.append({"row": row_number, "message": "team_id must be new and team_name is required"})
-            continue
-
-        user = UserDB(id=user_id, email=email, hashed_password=get_password_hash(password), name=name, role=account_type, college=college, phone=data.get("phone") or None)
-        db.add(user)
         if account_type == "LEADER":
-            db.add(TeamDB(id=team_id, name=team_name, college=college, leader_id=user_id, leader_email=email, status="REGISTERED", current_round=1, total_score=0.0))
-            db.add(TeamMemberDB(id=f"m-{uuid.uuid4().hex[:10]}", team_id=team_id, name=name, email=email, college=college, role_in_team="Team Leader", is_leader=True))
-        imported += 1
+            team_name = row_map.get("team name") or row_map.get("team_name") or f"Team {name}"
+            team_id = row_map.get("team id") or row_map.get("team_id") or f"TEAM-{imported + skipped:03d}"
+            
+            existing_team = db.query(TeamDB).filter((TeamDB.leader_id == user_id) | (TeamDB.leader_email == email)).first()
+            if not existing_team:
+                new_team = TeamDB(
+                    id=team_id,
+                    name=team_name,
+                    college=college,
+                    leader_id=user_id,
+                    leader_email=email,
+                    status="REGISTERED",
+                    current_round=1,
+                    total_score=0.0
+                )
+                db.add(new_team)
+                db.flush()
+                
+                # Add Leader Member
+                leader_mem = TeamMemberDB(
+                    id=f"m-{new_team.id}-leader",
+                    team_id=new_team.id,
+                    name=name,
+                    email=email,
+                    college=college,
+                    role_in_team="Team Leader",
+                    is_leader=True
+                )
+                db.add(leader_mem)
+            else:
+                existing_team.name = team_name
+                existing_team.college = college
+
     db.commit()
-    return {"imported": imported, "skipped_existing": skipped, "errors": errors}
+    return {"imported": imported, "updated_or_skipped": skipped, "errors": errors}
+
 
