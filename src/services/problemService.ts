@@ -1,7 +1,6 @@
 import { ProblemStatement } from '../types';
 import { MOCK_PROBLEMS } from '../mock/problemsData';
-
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from './apiConfig';
 
 class ProblemService {
   private problems: ProblemStatement[] = [];

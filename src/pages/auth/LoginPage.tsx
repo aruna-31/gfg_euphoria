@@ -2,7 +2,6 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
-import { ClubPartnersMarquee } from '../../components/common/ClubPartnersMarquee';
 import { Footer } from '../../components/common/Footer';
 import { LoginGfgBackground } from '../../components/common/LoginGfgBackground';
 import {
@@ -228,9 +227,6 @@ export const LoginPage: React.FC = () => {
             ))}
           </div>
         </div>
-
-        {/* 5 Club Partners Showcase */}
-        <ClubPartnersMarquee />
       </main>
 
       {/* Universal Footer */}

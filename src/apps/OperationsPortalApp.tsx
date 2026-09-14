@@ -27,7 +27,6 @@ import { CSVImportPage } from '../pages/admin/CSVImportPage';
 
 import { AdminReportsPage } from '../pages/admin/AdminReportsPage';
 import { AdminSettingsPage } from '../pages/admin/AdminSettingsPage';
-import { ClubPartnersMarquee } from '../components/common/ClubPartnersMarquee';
 import { Footer } from '../components/common/Footer';
 
 const OperationsHome: React.FC = () => {
@@ -80,10 +79,6 @@ const OperationsLogin: React.FC = () => {
               Manage hackathon rounds, capacity locks, teams, and live metrics.
             </span>
           </button>
-        </div>
-
-        <div className="mt-12">
-          <ClubPartnersMarquee />
         </div>
       </div>
       <Footer />

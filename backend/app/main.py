@@ -5,12 +5,23 @@ from app.core.db import engine, Base
 from app.api.v1 import auth, teams, problems, evaluations, rounds
 
 # Initialize DB tables on startup
-Base.metadata.create_all(bind=engine)
+try:
+    Base.metadata.create_all(bind=engine)
+except Exception as e:
+    print(f"[DB Init Warning] Table creation warning: {e}")
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
     openapi_url=f"{settings.API_V1_STR}/openapi.json"
 )
+
+@app.on_event("startup")
+def on_startup():
+    try:
+        from seed import seed_database
+        seed_database()
+    except Exception as e:
+        print(f"[Seed Notice] Startup seed skipped or already applied: {e}")
 
 # Set up CORS
 app.add_middleware(

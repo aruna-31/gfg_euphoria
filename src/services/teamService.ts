@@ -1,6 +1,5 @@
 import { Team } from '../types';
-
-const API_BASE_URL = 'http://localhost:8000/api/v1';
+import { API_BASE_URL } from './apiConfig';
 
 class TeamService {
   public async getAllTeams(): Promise<Team[]> {

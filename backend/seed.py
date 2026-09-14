@@ -52,7 +52,7 @@ def seed_database():
                     criteria=[
                         {"id": "c5", "name": "Functional Feature Completeness", "maxPoints": 30, "weight": 0.30, "description": "Working end-to-end execution of primary user stories"},
                         {"id": "c6", "name": "Code Quality & Clean Architecture", "maxPoints": 25, "weight": 0.25, "description": "Modularity, error handling, clean design patterns"},
-                        {"id": "c7", "name": "UI/UX Visual Excellence", "maxPoints": 25, "weight": 0.25, "description": "High aesthetic polish, micro-animations, light baby-pink styling"},
+                        {"id": "c7", "name": "UI/UX Visual Excellence", "maxPoints": 25, "weight": 0.25, "description": "High aesthetic polish, micro-animations, sleek GFG green and glassmorphism styling"},
                         {"id": "c8", "name": "Live Jury Q&A Performance", "maxPoints": 20, "weight": 0.20, "description": "Ability to justify technical choices during live evaluation"}
                     ]
                 ),

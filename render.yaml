@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: gfg-hackodessey-api
+    runtime: python
+    rootDir: backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    plan: free
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.11.8
+      - key: PROJECT_NAME
+        value: "Hackodessey 4.0 API"
+      - key: API_V1_STR
+        value: "/api/v1"
+      - key: SECRET_KEY
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "1440"
+      - key: DATABASE_URL
+        sync: false
