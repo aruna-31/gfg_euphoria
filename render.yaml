@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: gfg-hackodessey-api
+    name: gfg-euphoria
     runtime: python
     rootDir: backend
     buildCommand: pip install -r requirements.txt

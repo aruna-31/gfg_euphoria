@@ -177,13 +177,20 @@ def import_evaluators(csv_path: str):
             reader = csv.DictReader(f)
             count = 0
             for row in reader:
-                eval_id = row.get("Evaluator ID") or row.get("evaluator_id") or row.get("Id") or f"usr-eval-{count+1}"
-                name = row.get("Name") or row.get("name") or row.get("Evaluator Name") or "Evaluator"
-                email = (row.get("Email") or row.get("email") or row.get("Evaluator Email") or "").strip().lower()
-                password = row.get("Password") or row.get("password")
-                college = row.get("College") or row.get("college") or row.get("Department") or "KARE"
+                row_map = {k.strip().lower(): (v or "").strip() for k, v in row.items() if k}
+                eval_id = row_map.get("evaluator id") or row_map.get("evaluator_id") or row_map.get("id") or f"usr-eval-{count+1}"
+                name = row_map.get("name") or row_map.get("evaluator name") or row_map.get("evaluator") or "Evaluator"
+                email = (
+                    row_map.get("evaluator") or
+                    row_map.get("email") or 
+                    row_map.get("evaluator email") or 
+                    row_map.get("evaluator_email") or 
+                    row_map.get("registered email") or ""
+                ).lower()
+                password = row_map.get("password") or row_map.get("pass") or ""
+                college = row_map.get("college") or row_map.get("department") or row_map.get("institution") or "KARE"
 
-                if not email or not password:
+                if not email or not password or "@" not in email:
                     continue
 
                 existing = db.query(UserDB).filter(UserDB.email == email).first()
@@ -198,8 +205,14 @@ def import_evaluators(csv_path: str):
                     )
                     db.add(user)
                     count += 1
+                else:
+                    existing.hashed_password = get_password_hash(password)
+                    existing.name = name
+                    existing.role = "EVALUATOR"
+                    existing.college = college
+                    count += 1
             db.commit()
-            print(f"Successfully imported {count} Evaluators.")
+            print(f"Successfully processed {count} Evaluators.")
     finally:
         db.close()
 
@@ -211,13 +224,20 @@ def import_admins(csv_path: str):
             reader = csv.DictReader(f)
             count = 0
             for row in reader:
-                admin_id = row.get("Admin ID") or row.get("admin_id") or f"usr-admin-{count+1}"
-                name = row.get("Name") or row.get("name") or "Administrator"
-                email = (row.get("Email") or row.get("email") or "").strip().lower()
-                password = row.get("Password") or row.get("password")
-                college = row.get("College") or row.get("Organization") or "Directorate"
+                row_map = {k.strip().lower(): (v or "").strip() for k, v in row.items() if k}
+                admin_id = row_map.get("admin id") or row_map.get("admin_id") or f"usr-admin-{count+1}"
+                name = row_map.get("name") or row_map.get("admin name") or "Administrator"
+                email = (
+                    row_map.get("admin") or
+                    row_map.get("email") or 
+                    row_map.get("admin email") or 
+                    row_map.get("admin_email") or 
+                    row_map.get("registered email") or ""
+                ).lower()
+                password = row_map.get("password") or row_map.get("pass") or ""
+                college = row_map.get("college") or row_map.get("organization") or "Directorate"
 
-                if not email or not password:
+                if not email or not password or "@" not in email:
                     continue
 
                 existing = db.query(UserDB).filter(UserDB.email == email).first()
@@ -232,8 +252,14 @@ def import_admins(csv_path: str):
                     )
                     db.add(user)
                     count += 1
+                else:
+                    existing.hashed_password = get_password_hash(password)
+                    existing.name = name
+                    existing.role = "ADMIN"
+                    existing.college = college
+                    count += 1
             db.commit()
-            print(f"Successfully imported {count} Admins.")
+            print(f"Successfully processed {count} Admins.")
     finally:
         db.close()
 

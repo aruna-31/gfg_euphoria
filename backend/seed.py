@@ -76,7 +76,20 @@ def seed_database():
             db.add_all(rounds)
             db.commit()
 
-        # 3. User accounts are intentionally not seeded. Import authorised accounts with passwords supplied by the event owner.
+        # 3. Seed Users & Teams from CSVs if present
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        leaders_csv = os.path.join(base_dir, "teamleaders.csv")
+        evaluators_csv = os.path.join(base_dir, "evaulator.csv")
+        admins_csv = os.path.join(base_dir, "admin.csv")
+
+        from import_csv import import_team_leaders, import_evaluators, import_admins
+
+        if os.path.exists(leaders_csv):
+            import_team_leaders(leaders_csv)
+        if os.path.exists(evaluators_csv):
+            import_evaluators(evaluators_csv)
+        if os.path.exists(admins_csv):
+            import_admins(admins_csv)
 
         # 4. Seed Announcements
         if db.query(AnnouncementDB).count() == 0:

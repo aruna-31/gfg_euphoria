@@ -24,7 +24,7 @@ export const getApiBaseUrl = (): string => {
       window.location.hostname !== '127.0.0.1' &&
       !window.location.hostname.endsWith('.local'))
   ) {
-    return 'https://gfg-hackodessey-api.onrender.com/api/v1';
+    return 'https://gfg-euphoria.onrender.com/api/v1';
   }
 
   // 3. Local development fallback
