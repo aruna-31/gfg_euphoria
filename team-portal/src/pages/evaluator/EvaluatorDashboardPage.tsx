@@ -30,6 +30,16 @@ export const EvaluatorDashboardPage: React.FC = () => {
 
   useEffect(() => {
     loadDashboard();
+
+    // Auto-sync rounds updated by admin
+    const interval = setInterval(() => {
+      roundService.getAllRounds().then((rounds) => {
+        const active = rounds.find((r) => r.status === 'ACTIVE') || null;
+        setActiveRound(active);
+      }).catch(() => {});
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, [user]);
 
   const loadDashboard = async () => {
@@ -42,23 +52,34 @@ export const EvaluatorDashboardPage: React.FC = () => {
         problemService.getAllProblems(),
       ]);
 
-      const current = allEvaluators.find((item) => item.email.toLowerCase() === user?.email?.toLowerCase());
-      setEvaluator(current || {
-        id: user?.evaluatorId || user?.id || 'evaluator',
-        name: user?.name || 'Jury Evaluator',
-        email: user?.email || '',
-        designation: 'Evaluator',
-        organization: 'Faculty Jury Panel',
-        expertise: ['Full-Stack', 'AI/ML', 'System Design'],
-        assignedTeamIds: allTeams.slice(0, 4).map((t) => t.id),
-        assignedRounds: [1, 2],
-        completedCount: 0,
-        pendingCount: allTeams.length,
-        status: 'ACTIVE',
-      });
+      const current = allEvaluators.find(
+        (item) =>
+          item.email.toLowerCase() === user?.email?.toLowerCase() ||
+          item.id.toLowerCase() === user?.id?.toLowerCase() ||
+          item.id.toLowerCase() === user?.evaluatorId?.toLowerCase()
+      );
 
-      setAssignedTeams(allTeams);
-      const active = allRounds.find((r) => r.status === 'ACTIVE') || allRounds[0] || null;
+      const realEvaluator: Evaluator = current || {
+        id: user?.evaluatorId || user?.id || 'usr-eval-1',
+        name: user?.name || 'Nandu',
+        email: user?.email || 'nandulavanuru@gmail.com',
+        designation: 'Jury Evaluator',
+        organization: 'KARE',
+        expertise: ['Full-Stack', 'AI/ML', 'System Design'],
+        assignedTeamIds: [],
+        assignedRounds: [1, 2, 3],
+        completedCount: 0,
+        pendingCount: 0,
+        status: 'ACTIVE',
+      };
+
+      setEvaluator(realEvaluator);
+
+      // Filter ONLY teams assigned to this evaluator
+      const assigned = allTeams.filter((t) => realEvaluator.assignedTeamIds.includes(t.id));
+      setAssignedTeams(assigned);
+
+      const active = allRounds.find((r) => r.status === 'ACTIVE') || null;
       setActiveRound(active);
       setProblems(new Map(allProblems.map((p) => [p.id, p.title])));
     } finally {
@@ -75,11 +96,12 @@ export const EvaluatorDashboardPage: React.FC = () => {
     );
   }
 
-  const completedCount = assignedTeams.filter((t) => t.roundScores?.[activeRound?.number || 1] !== undefined).length;
+  const roundNum = activeRound?.number || activeRound?.id || 1;
+  const completedCount = assignedTeams.filter((t) => t.roundScores?.[roundNum] !== undefined).length;
   const pendingCount = assignedTeams.length - completedCount;
 
   const scores = assignedTeams
-    .map((t) => t.roundScores?.[activeRound?.number || 1])
+    .map((t) => t.roundScores?.[roundNum])
     .filter((s): s is number => s !== undefined);
   const avgScore = scores.length > 0 ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
 
@@ -119,12 +141,25 @@ export const EvaluatorDashboardPage: React.FC = () => {
 
         <div className="bg-[#0B1520] p-3.5 rounded-xl border border-emerald-500/20 text-right">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">Active Evaluation Round</span>
-          <span className="text-sm font-bold text-white block mt-0.5">
-            Round {activeRound?.number || 1}: {activeRound?.name || 'Problem Definition'}
-          </span>
-          <Badge variant="gfg" size="sm" className="mt-1">
-            WINDOW OPEN
-          </Badge>
+          {activeRound ? (
+            <>
+              <span className="text-sm font-bold text-white block mt-0.5">
+                Round {activeRound.number || activeRound.id}: {activeRound.title || activeRound.name}
+              </span>
+              <Badge variant="gfg" size="sm" className="mt-1">
+                WINDOW OPEN
+              </Badge>
+            </>
+          ) : (
+            <>
+              <span className="text-sm font-bold text-slate-300 block mt-0.5">
+                No Active Round
+              </span>
+              <Badge variant="amber" size="sm" className="mt-1">
+                ALL UPCOMING / PAUSED
+              </Badge>
+            </>
+          )}
         </div>
       </div>
 
@@ -198,7 +233,7 @@ export const EvaluatorDashboardPage: React.FC = () => {
                 </tr>
               ) : (
                 assignedTeams.map((t) => {
-                  const hasEvaluated = t.roundScores?.[activeRound?.number || 1] !== undefined;
+                  const hasEvaluated = t.roundScores?.[roundNum] !== undefined;
                   const probTitle = t.problemStatementId ? problems.get(t.problemStatementId) : 'Problem Pending';
 
                   return (
@@ -223,14 +258,14 @@ export const EvaluatorDashboardPage: React.FC = () => {
                       </td>
 
                       <td className="py-3 px-4 text-center font-mono text-slate-300">
-                        Round {activeRound?.number || 1}
+                        {activeRound ? `Round ${activeRound.number || activeRound.id}` : '—'}
                       </td>
 
                       <td className="py-3 px-4 text-center">
                         {hasEvaluated ? (
                           <span className="inline-flex items-center gap-1 text-[11px] font-mono text-[#22C55E] bg-emerald-950 px-2.5 py-0.5 rounded border border-emerald-500/40">
                             <CheckCircle2 className="w-3 h-3" />
-                            {t.roundScores[activeRound?.number || 1]}/100
+                            {t.roundScores[roundNum]}/100
                           </span>
                         ) : (
                           <Badge variant="amber" size="sm">

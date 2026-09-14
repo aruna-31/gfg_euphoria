@@ -27,6 +27,16 @@ export const LeaderDashboardPage: React.FC = () => {
 
   useEffect(() => {
     loadDashboard();
+
+    // Auto-sync round changes made by admin
+    const interval = setInterval(() => {
+      roundService.getAllRounds().then((rounds) => {
+        const current = rounds.find((r) => r.status === 'ACTIVE') || null;
+        setActiveRound(current);
+      }).catch(() => {});
+    }, 4000);
+
+    return () => clearInterval(interval);
   }, [user]);
 
   const loadDashboard = async () => {
@@ -53,7 +63,7 @@ export const LeaderDashboardPage: React.FC = () => {
         setProblem(prob);
       }
 
-      const current = rounds.find((r) => r.status === 'ACTIVE') || rounds[0] || null;
+      const current = rounds.find((r) => r.status === 'ACTIVE') || null;
       setActiveRound(current);
     } finally {
       setLoading(false);
@@ -94,20 +104,39 @@ export const LeaderDashboardPage: React.FC = () => {
           <div>
             <div className="flex items-center justify-between mb-3 border-b border-emerald-500/15 pb-3">
               <span className="text-xs font-mono font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-[#22C55E]" />
+                <Clock className={`w-3.5 h-3.5 ${activeRound ? 'text-[#22C55E]' : 'text-amber-400'}`} />
                 Current Active Round
               </span>
-              <Badge variant="gfg" size="sm">
-                ROUND {activeRound?.id || 1} ACTIVE
-              </Badge>
+              {activeRound ? (
+                <Badge variant="gfg" size="sm">
+                  ROUND {activeRound.number || activeRound.id} ACTIVE
+                </Badge>
+              ) : (
+                <Badge variant="amber" size="sm">
+                  NO ROUND ACTIVE
+                </Badge>
+              )}
             </div>
 
-            <h3 className="text-base font-bold text-white mb-1">
-              {activeRound?.name || 'Round 1: Problem Definition & Prototype'}
-            </h3>
-            <p className="text-xs text-slate-400 leading-relaxed">
-              {activeRound?.description}
-            </p>
+            {activeRound ? (
+              <>
+                <h3 className="text-base font-bold text-white mb-1">
+                  {activeRound.title || activeRound.name}
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  {activeRound.description}
+                </p>
+              </>
+            ) : (
+              <div className="py-2 space-y-1">
+                <h3 className="text-base font-bold text-slate-200">
+                  No Round Currently Active
+                </h3>
+                <p className="text-xs text-slate-400 leading-relaxed">
+                  All evaluation checkpoints are currently upcoming or paused. You will be notified when Round 1 begins.
+                </p>
+              </div>
+            )}
           </div>
         </Card>
 

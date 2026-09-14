@@ -35,6 +35,11 @@ def update_round_status(round_id: int, status_update: Dict[str, str], db: Sessio
     if not round_obj:
         return {"error": f"Round {round_id} not found"}
     
+    if status_val == "ACTIVE":
+        for other_r in db.query(RoundDB).filter(RoundDB.id != round_id).all():
+            if other_r.status == "ACTIVE":
+                other_r.status = "COMPLETED"
+
     round_obj.status = status_val
     db.commit()
     return {"status": "success", "round_id": round_id, "new_status": status_val}

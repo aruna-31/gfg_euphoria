@@ -77,10 +77,10 @@ export const EvaluateTeamPage: React.FC = () => {
         maxScore: 100,
         instructions: ['Review architecture', 'Test prototype live'],
         criteria: [
-          { id: 'crit-1', name: 'Technical Innovation & Architecture', maxScore: 30, description: 'Code structure, design pattern, and feasibility.' },
-          { id: 'crit-2', name: 'UI / UX & Accessibility', maxScore: 25, description: 'Visual hierarchy, responsiveness, and usability.' },
-          { id: 'crit-3', name: 'Completeness & Deliverables', maxScore: 25, description: 'Adherence to stated challenge requirements.' },
-          { id: 'crit-4', name: 'Presentation & Q&A Defense', maxScore: 20, description: 'Clarity of jury defense and question handling.' },
+          { id: 'crit-1', title: 'Technical Innovation & Architecture', name: 'Technical Innovation & Architecture', maxScore: 30, description: 'Code structure, design pattern, and feasibility.' },
+          { id: 'crit-2', title: 'UI / UX & Accessibility', name: 'UI / UX & Accessibility', maxScore: 25, description: 'Visual hierarchy, responsiveness, and usability.' },
+          { id: 'crit-3', title: 'Completeness & Deliverables', name: 'Completeness & Deliverables', maxScore: 25, description: 'Adherence to stated challenge requirements.' },
+          { id: 'crit-4', title: 'Presentation & Q&A Defense', name: 'Presentation & Q&A Defense', maxScore: 20, description: 'Clarity of jury defense and question handling.' },
         ],
       };
 
