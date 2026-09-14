@@ -4,6 +4,7 @@ export const StylishCursor: React.FC = () => {
   const [position, setPosition] = useState({ x: -100, y: -100 });
   const [trailerPos, setTrailerPos] = useState({ x: -100, y: -100 });
   const [isHovered, setIsHovered] = useState(false);
+  const [isInput, setIsInput] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -24,18 +25,23 @@ export const StylishCursor: React.FC = () => {
       if (!isVisible) setIsVisible(true);
 
       const target = e.target as HTMLElement;
-      if (
-        target &&
-        (target.tagName === 'BUTTON' ||
+      if (target) {
+        const isClickable =
+          target.tagName === 'BUTTON' ||
           target.tagName === 'A' ||
           target.closest('button') ||
           target.closest('a') ||
           target.getAttribute('role') === 'button' ||
-          target.classList.contains('cursor-pointer'))
-      ) {
-        setIsHovered(true);
-      } else {
-        setIsHovered(false);
+          target.classList.contains('cursor-pointer');
+
+        const isInputField =
+          target.tagName === 'INPUT' ||
+          target.tagName === 'TEXTAREA' ||
+          target.tagName === 'SELECT' ||
+          target.isContentEditable;
+
+        setIsHovered(Boolean(isClickable));
+        setIsInput(Boolean(isInputField));
       }
     };
 
@@ -43,8 +49,8 @@ export const StylishCursor: React.FC = () => {
     const onMouseEnter = () => setIsVisible(true);
 
     const animateTrailer = () => {
-      currentX += (targetX - currentX) * 0.18;
-      currentY += (targetY - currentY) * 0.18;
+      currentX += (targetX - currentX) * 0.22;
+      currentY += (targetY - currentY) * 0.22;
       setTrailerPos({ x: currentX, y: currentY });
       animationFrameId = requestAnimationFrame(animateTrailer);
     };
@@ -65,12 +71,14 @@ export const StylishCursor: React.FC = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="pointer-events-none fixed inset-0 z-50 overflow-hidden">
+    <div className="pointer-events-none fixed inset-0 z-[9999] overflow-hidden">
       {/* Outer Glowing Cyber Ring Follower */}
       <div
-        className={`fixed top-0 left-0 rounded-full transition-transform duration-75 ease-out -translate-x-1/2 -translate-y-1/2 ${
+        className={`fixed top-0 left-0 rounded-full transition-all duration-100 ease-out -translate-x-1/2 -translate-y-1/2 ${
           isHovered
-            ? 'w-14 h-14 border-2 border-emerald-400 bg-emerald-500/15 shadow-[0_0_20px_rgba(34,197,94,0.6)] scale-110'
+            ? 'w-12 h-12 border-2 border-emerald-400 bg-emerald-500/20 shadow-[0_0_24px_rgba(34,197,94,0.7)] scale-110'
+            : isInput
+            ? 'w-7 h-7 border border-cyan-400/80 bg-cyan-500/10 shadow-[0_0_15px_rgba(6,182,212,0.5)] rounded-md'
             : 'w-8 h-8 border border-emerald-500/60 bg-emerald-500/5 shadow-[0_0_12px_rgba(34,197,94,0.3)]'
         }`}
         style={{
@@ -80,7 +88,9 @@ export const StylishCursor: React.FC = () => {
 
       {/* Center Precision Sci-Fi Core Dot */}
       <div
-        className="fixed top-0 left-0 w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_10px_#22c55e] -translate-x-1/2 -translate-y-1/2"
+        className={`fixed top-0 left-0 rounded-full -translate-x-1/2 -translate-y-1/2 transition-colors ${
+          isInput ? 'w-1.5 h-3 bg-cyan-400 shadow-[0_0_10px_#06b6d4]' : 'w-2 h-2 bg-emerald-400 shadow-[0_0_12px_#22c55e]'
+        }`}
         style={{
           transform: `translate3d(${position.x}px, ${position.y}px, 0) translate(-50%, -50%)`,
         }}

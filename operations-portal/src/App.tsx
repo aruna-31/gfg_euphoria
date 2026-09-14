@@ -25,6 +25,7 @@ import { AdminLeaderboardPage } from './pages/admin/AdminLeaderboardPage';
 import { CSVImportPage } from './pages/admin/CSVImportPage';
 import { AdminReportsPage } from './pages/admin/AdminReportsPage';
 import { AdminSettingsPage } from './pages/admin/AdminSettingsPage';
+import { StylishCursor } from './components/common/StylishCursor';
 
 const OperationsRoutes: React.FC = () => (
   <BrowserRouter>
@@ -73,6 +74,7 @@ export const App: React.FC = () => {
     <AuthProvider>
       <NotificationProvider>
         <AudioProvider>
+          <StylishCursor />
           <OperationsRoutes />
         </AudioProvider>
       </NotificationProvider>

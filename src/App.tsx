@@ -4,10 +4,10 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import { AudioProvider } from './context/AudioContext';
 
-// Layout & Route Guard
 import { AppLayout } from './layouts/AppLayout';
 import { ProtectedRoute } from './components/common/ProtectedRoute';
 import { CinematicIntro } from './components/common/CinematicIntro';
+import { StylishCursor } from './components/common/StylishCursor';
 
 // Public Auth Pages
 import { LoginPage } from './pages/auth/LoginPage';
@@ -286,6 +286,7 @@ export function App() {
     <AuthProvider>
       <NotificationProvider>
         <AudioProvider>
+          <StylishCursor />
           <MainApp />
         </AudioProvider>
       </NotificationProvider>

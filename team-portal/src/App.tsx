@@ -14,6 +14,7 @@ import { ProblemSelectionPage } from './pages/participant/ProblemSelectionPage';
 import { UploadPhotoPage } from './pages/participant/UploadPhotoPage';
 import { LiveLeaderboardPage } from './pages/participant/LiveLeaderboardPage';
 import { TeamProfilePage } from './pages/participant/TeamProfilePage';
+import { StylishCursor } from './components/common/StylishCursor';
 
 const TeamRoutes: React.FC = () => (
   <BrowserRouter>
@@ -51,6 +52,7 @@ export const App: React.FC = () => {
     <AuthProvider>
       <NotificationProvider>
         <AudioProvider>
+          <StylishCursor />
           <TeamRoutes />
         </AudioProvider>
       </NotificationProvider>
