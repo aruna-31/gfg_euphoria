@@ -105,26 +105,9 @@ export const LeaderDashboardPage: React.FC = () => {
             <h3 className="text-base font-bold text-white mb-1">
               {activeRound?.name || 'Round 1: Problem Definition & Prototype'}
             </h3>
-            <p className="text-xs text-slate-400 leading-relaxed mb-4">
+            <p className="text-xs text-slate-400 leading-relaxed">
               {activeRound?.description}
             </p>
-
-            <div className="space-y-2 text-xs text-slate-300 bg-[#0B1520] p-3 rounded-xl border border-slate-700/60">
-              <span className="text-[11px] font-mono text-emerald-400 uppercase block font-bold">
-                Evaluation Deliverables:
-              </span>
-              {activeRound?.instructions.slice(0, 2).map((ins, i) => (
-                <div key={i} className="flex items-start gap-2">
-                  <span className="text-[#22C55E] font-bold">•</span>
-                  <span>{ins}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-emerald-500/15 flex items-center justify-between text-xs">
-            <span className="text-slate-400 font-mono">Max Score: {activeRound?.maxScore || 100} pts</span>
-            <span className="text-emerald-400 font-mono text-xs font-semibold">Evaluation in Progress</span>
           </div>
         </Card>
 

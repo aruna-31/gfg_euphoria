@@ -19,15 +19,9 @@ export const Footer: React.FC = () => {
               Hackodessey 4.0
             </p>
             <p className="text-[11px] font-mono text-emerald-400 font-bold flex items-center gap-1">
-              <ShieldCheck className="w-3 h-3 text-[#22C55E]" /> Powered by GEEKS FOR GEEKS
+              <ShieldCheck className="w-3 h-3 text-[#22C55E]" /> Made by GEEKS FOR GEEKS
             </p>
           </div>
-        </div>
-
-        {/* Center: Universal Banner */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-xs font-mono font-bold text-emerald-300">
-          <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-          <span>Powered by GEEKS FOR GEEKS</span>
         </div>
 
         {/* Right: Copyright & Chapters */}

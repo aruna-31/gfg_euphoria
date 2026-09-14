@@ -69,12 +69,10 @@ const OperationsRoutes: React.FC = () => (
 );
 
 export const App: React.FC = () => {
-  const [showIntro, setShowIntro] = useState(true);
   return (
     <AuthProvider>
       <NotificationProvider>
         <AudioProvider>
-          {showIntro && <CinematicIntro onComplete={() => setShowIntro(false)} />}
           <OperationsRoutes />
         </AudioProvider>
       </NotificationProvider>

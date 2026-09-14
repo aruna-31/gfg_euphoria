@@ -134,10 +134,6 @@ export const ProblemSelectionPage: React.FC = () => {
       <div className="bg-[#0F1E2E]/90 border border-emerald-500/25 rounded-2xl p-6 sm:p-7 shadow-xl shadow-black/40 space-y-4 backdrop-blur-xl">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div>
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-xs font-mono font-bold text-emerald-300 mb-2">
-              <Sparkles className="w-3.5 h-3.5 text-[#22C55E]" />
-              <span>HACKODESSEY 4.0 • OFFICIAL REPOSITORY</span>
-            </div>
             <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-white uppercase font-['Outfit',sans-serif]">
               PROBLEM STATEMENTS
             </h1>
@@ -145,10 +141,6 @@ export const ProblemSelectionPage: React.FC = () => {
               Select ONE challenge for your team. Once confirmed, it is locked in the database (Max 3 teams capacity per statement).
             </p>
           </div>
-
-          <Badge variant="gfg" size="md">
-            {problems.length} CHALLENGES REPO
-          </Badge>
         </div>
 
         {/* LOCKED STATE BANNER */}
@@ -160,23 +152,20 @@ export const ProblemSelectionPage: React.FC = () => {
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h3 className="text-sm font-bold text-[#22C55E] uppercase tracking-wider font-mono">
-                    ✓ PROBLEM STATEMENT SELECTED
-                  </h3>
-                  <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-emerald-950 text-emerald-300 border border-emerald-500/40">
-                    STATUS: LOCKED
+                  <span className="text-xs font-mono font-bold text-emerald-300">
+                    SELECTION OFFICIALLY CONFIRMED
                   </span>
                 </div>
-                <p className="text-base font-bold text-white mt-0.5">
+                <h3 className="text-base font-bold text-white mt-1">
                   {chosenProblem.id}: {chosenProblem.title}
-                </p>
-                <p className="text-xs text-emerald-200/80 mt-1">
-                  Your squad has locked this challenge in the PostgreSQL database.
+                </h3>
+                <p className="text-xs text-slate-300 mt-0.5">
+                  Track: {chosenProblem.category} • Max Capacity: {chosenProblem.maxCapacity || 3} Teams
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-2">
               <Button
                 size="sm"
                 variant="outline"
@@ -190,7 +179,7 @@ export const ProblemSelectionPage: React.FC = () => {
                 onClick={() => navigate('/team/photo')}
                 rightIcon={<ArrowRight className="w-3.5 h-3.5" />}
               >
-                Upload Squad Photo
+                Squad Photo
               </Button>
             </div>
           </div>
@@ -251,9 +240,6 @@ export const ProblemSelectionPage: React.FC = () => {
                       }`}>
                         {prob.selectedByCount || 0}/3 Teams Selected
                       </span>
-                      <Badge variant="cyan" size="sm">
-                        {prob.difficulty}
-                      </Badge>
                     </div>
                   </div>
 
@@ -323,7 +309,7 @@ export const ProblemSelectionPage: React.FC = () => {
           isOpen={true}
           onClose={() => setActiveProblemDetail(null)}
           title={`${activeProblemDetail.id}: ${activeProblemDetail.title}`}
-          description={`Track: ${activeProblemDetail.category} • Difficulty: ${activeProblemDetail.difficulty}`}
+          description={`Track: ${activeProblemDetail.category}`}
           maxWidth="2xl"
         >
           <div className="space-y-4 text-xs text-slate-300 text-left">

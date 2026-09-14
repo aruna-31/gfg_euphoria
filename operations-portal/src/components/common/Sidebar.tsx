@@ -144,14 +144,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
           </nav>
         </div>
 
-        {/* Bottom GFG Lead Tag & Logout */}
-        <div className="p-3 border-t border-emerald-500/15 space-y-2">
-          <div className="px-3 py-1.5 rounded-lg bg-emerald-950/60 border border-emerald-500/30 text-center">
-            <p className="text-[10px] font-mono text-emerald-400 font-bold">
-              Powered by GEEKS FOR GEEKS
-            </p>
-          </div>
-
+        {/* Bottom Logout */}
+        <div className="p-3 border-t border-emerald-500/15">
           <button
             onClick={handleLogout}
             className="w-full flex items-center gap-3 px-3.5 py-2 rounded-xl text-xs font-medium text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"

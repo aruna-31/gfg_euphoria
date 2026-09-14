@@ -96,7 +96,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
               <p className="text-[10px] text-slate-400 font-mono hidden sm:block">
-                Powered by GEEKS FOR GEEKS
+                Made by GEEKS FOR GEEKS
               </p>
             </div>
           </div>
