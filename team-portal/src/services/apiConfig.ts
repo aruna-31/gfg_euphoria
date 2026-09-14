@@ -1,22 +1,16 @@
 /**
  * Centralized API Configuration for Hackodessey 4.0
- * Reads strictly from VITE_API_URL / VITE_API_BASE_URL
- * Defaults securely to production Render backend when deployed
+ * Strictly points to deployed Render backend: https://gfg-euphoria.onrender.com/api/v1
  */
 
 export const getApiBaseUrl = (): string => {
-  // 1. Explicitly configured Vite environment variable
   const envUrl = (import.meta.env.VITE_API_URL || import.meta.env.VITE_API_BASE_URL) as string | undefined;
-  if (typeof envUrl === 'string' && envUrl.trim() !== '') {
-    const trimmed = envUrl.trim();
-    return trimmed.endsWith('/api/v1')
-      ? trimmed
-      : trimmed.endsWith('/')
-      ? `${trimmed}api/v1`
-      : `${trimmed}/api/v1`;
+  if (typeof envUrl === 'string' && envUrl.trim().startsWith('http')) {
+    const trimmed = envUrl.trim().replace(/\/+$/, '');
+    return trimmed.endsWith('/api/v1') ? trimmed : `${trimmed}/api/v1`;
   }
 
-  // 2. Default everywhere (both local dev and production) to live Render backend
+  // Guaranteed absolute URL to production Render backend (never relative to prevent 308/405)
   return 'https://gfg-euphoria.onrender.com/api/v1';
 };
 
@@ -27,4 +21,5 @@ export const getApiUrl = (endpoint: string): string => {
   const cleanEndpoint = endpoint.startsWith('/') ? endpoint.slice(1) : endpoint;
   return `${base}/${cleanEndpoint}`;
 };
+
 
