@@ -3,16 +3,16 @@
     "private":  true,
     "version":  "0.0.0",
     "type":  "module",
-    "scripts":  {
-                    "dev":  "vite",
-                    "build":  "tsc -b \u0026\u0026 vite build",
-                    "lint":  "oxlint",
-                    "preview":  "vite preview",
-                    "dev:team":  "vite --config vite.team.config.ts",
-                    "dev:operations":  "vite --config vite.operations.config.ts",
-                    "build:team":  "tsc -b \u0026\u0026 vite build --config vite.team.config.ts",
-                    "build:operations":  "tsc -b \u0026\u0026 vite build --config vite.operations.config.ts"
-                },
+    "scripts": {
+        "dev": "vite",
+        "build": "npm --prefix team-portal run build && npm --prefix operations-portal run build",
+        "build:team": "npm --prefix team-portal run build",
+        "build:operations": "npm --prefix operations-portal run build",
+        "dev:team": "npm --prefix team-portal run dev",
+        "dev:operations": "npm --prefix operations-portal run dev",
+        "lint": "oxlint",
+        "preview": "vite preview"
+    },
     "dependencies":  {
                          "@tailwindcss/vite":  "^4.3.3",
                          "canvas-confetti":  "^1.9.4",

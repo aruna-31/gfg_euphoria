@@ -1,0 +1,70 @@
+import { Round } from '../types';
+
+export const MOCK_ROUNDS: Round[] = [
+  {
+    id: 1,
+    number: 1,
+    name: 'Round 1: Idea Validation & Architecture Blueprint',
+    title: 'Round 1: Idea Validation & Architecture Blueprint',
+    description: 'Foundational checkpoint assessing problem definition, technical feasibility, system design, and database schema.',
+    status: 'COMPLETED',
+    startTime: '2026-09-02T10:00:00Z',
+    endTime: '2026-09-02T18:00:00Z',
+    maxScore: 100,
+    instructions: [
+      'Present your system architecture diagrams and API contracts.',
+      'Explain your tech stack selection and scalability bottlenecks.',
+      'Demonstrate your project repository and commit structure.',
+    ],
+    criteria: [
+      { id: 'crit-1', title: 'Problem Understanding & Novelty', name: 'Problem Understanding & Novelty', description: 'Grasp of the problem domain and original angle', maxScore: 25 },
+      { id: 'crit-2', title: 'System Architecture & Schema', name: 'System Architecture & Schema', description: 'Robustness of design and modularity', maxScore: 25 },
+      { id: 'crit-3', title: 'Technical Feasibility', name: 'Technical Feasibility', description: 'Realistic execution capability within time limits', maxScore: 25 },
+      { id: 'crit-4', title: 'Presentation & Q&A', name: 'Presentation & Q&A', description: 'Clarity of pitch and technical defense', maxScore: 25 },
+    ],
+  },
+  {
+    id: 2,
+    number: 2,
+    name: 'Round 2: Functional Prototype & Edge Feasibility',
+    title: 'Round 2: Functional Prototype & Edge Feasibility',
+    description: 'Midway checkpoint evaluating working core features, code quality, and live interactive prototypes.',
+    status: 'ACTIVE',
+    startTime: '2026-09-03T09:00:00Z',
+    endTime: '2026-09-03T18:00:00Z',
+    maxScore: 100,
+    instructions: [
+      'Live execution of the primary user flow (zero mocked slides).',
+      'Display active API integrations and database queries.',
+      'Highlight error boundaries, edge cases, and test suites.',
+    ],
+    criteria: [
+      { id: 'crit-5', title: 'Working Prototype Execution', name: 'Working Prototype Execution', description: 'Functional core user journey without simulation', maxScore: 30 },
+      { id: 'crit-6', title: 'Engineering & Code Quality', name: 'Engineering & Code Quality', description: 'Architecture, clean code, and repository hygiene', maxScore: 25 },
+      { id: 'crit-7', title: 'UI / UX Design & Accessibility', name: 'UI / UX Design & Accessibility', description: 'Responsive frontend experience and user intuition', maxScore: 25 },
+      { id: 'crit-8', title: 'Progress Velocity & Team Synergy', name: 'Progress Velocity & Team Synergy', description: 'Milestone completion rate from Round 1', maxScore: 20 },
+    ],
+  },
+  {
+    id: 3,
+    number: 3,
+    name: 'Round 3: Final Product Demo & Grand Defense',
+    title: 'Round 3: Final Product Demo & Grand Defense',
+    description: 'Grand finale evaluating production readiness, market viability, presentation, and edge polish.',
+    status: 'UPCOMING',
+    startTime: '2026-09-04T10:00:00Z',
+    endTime: '2026-09-04T16:00:00Z',
+    maxScore: 100,
+    instructions: [
+      'Final 5-minute pitch followed by 3-minute technical jury Q&A.',
+      'Demonstrate deployed live URLs and stress-test performance.',
+      'Present cost of operations and future roadmap.',
+    ],
+    criteria: [
+      { id: 'crit-9', title: 'Complete Product & Polish', name: 'Complete Product & Polish', description: 'Deployable solution ready for real users', maxScore: 30 },
+      { id: 'crit-10', title: 'Innovation & Impact', name: 'Innovation & Impact', description: 'Measurable societal or industrial value', maxScore: 30 },
+      { id: 'crit-11', title: 'Security & Scalability', name: 'Security & Scalability', description: 'Production hardening, auth, and fault tolerance', maxScore: 20 },
+      { id: 'crit-12', title: 'Grand Pitch & Defense', name: 'Grand Pitch & Defense', description: 'Storytelling, delivery, and jury engagement', maxScore: 20 },
+    ],
+  },
+];
