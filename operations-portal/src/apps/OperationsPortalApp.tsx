@@ -107,10 +107,7 @@ const OperationsRoutes: React.FC = () => (
       <Route path="/admin/problems" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminProblemsPage /></ProtectedRoute>} />
       <Route path="/admin/rounds" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminRoundsPage /></ProtectedRoute>} />
       <Route path="/admin/leaderboard" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminLeaderboardPage /></ProtectedRoute>} />
-      <Route path="/admin/import" element={<ProtectedRoute allowedRoles={['ADMIN']}><CSVImportPage /></ProtectedRoute>} />
-
       <Route path="/admin/reports" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminReportsPage /></ProtectedRoute>} />
-      <Route path="/admin/settings" element={<ProtectedRoute allowedRoles={['ADMIN']}><AdminSettingsPage /></ProtectedRoute>} />
     </Route>
     <Route path="*" element={<Navigate to="/login" replace />} />
   </Routes></BrowserRouter>

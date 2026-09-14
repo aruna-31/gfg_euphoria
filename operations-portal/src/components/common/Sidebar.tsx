@@ -72,9 +72,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     { to: '/admin/problems', label: 'Problem Statements', icon: <FileCode2 className="w-4 h-4" /> },
     { to: '/admin/rounds', label: 'Rounds', icon: <Clock className="w-4 h-4" /> },
     { to: '/admin/leaderboard', label: 'Leaderboard', icon: <Trophy className="w-4 h-4" /> },
-    { to: '/admin/import', label: 'Team CSV Import', icon: <FileSpreadsheet className="w-4 h-4" /> },
     { to: '/admin/reports', label: 'Reports', icon: <DownloadCloud className="w-4 h-4" /> },
-    { to: '/admin/settings', label: 'Settings', icon: <Sliders className="w-4 h-4" /> },
   ];
 
   const currentLinks =

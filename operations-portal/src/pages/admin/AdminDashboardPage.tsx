@@ -86,15 +86,6 @@ export const AdminDashboardPage: React.FC = () => {
         <div className="relative flex w-full lg:w-auto flex-wrap items-center gap-2.5">
           <Button
             size="sm"
-            variant="outline"
-            onClick={() => navigate('/admin/import')}
-            leftIcon={<FileSpreadsheet className="w-3.5 h-3.5 text-[#22C55E]" />}
-          >
-            Import CSV
-          </Button>
-
-          <Button
-            size="sm"
             variant="primary"
             onClick={() => navigate('/admin/reports')}
             leftIcon={<DownloadCloud className="w-3.5 h-3.5" />}
@@ -138,97 +129,6 @@ export const AdminDashboardPage: React.FC = () => {
           subtitle="All rounds"
           icon={<TrendingUp className="w-4 h-4 text-teal-400" />}
         />
-      </div>
-
-      {/* Analytics & Real-Time Pulse Row */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Left: Challenge Track Distribution Chart */}
-        <Card className="lg:col-span-2 p-5 bg-[#0F1E2E]/90 border border-emerald-500/20">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h2 className="text-xs font-bold font-mono uppercase tracking-wider text-slate-200">
-                Team Distribution Across Challenge Tracks
-              </h2>
-              <p className="text-[11px] text-slate-400">Number of teams allocated per track</p>
-            </div>
-            <span className="text-xs font-mono text-[#22C55E] font-bold">
-              {probDistribution.reduce((a, b) => a + b.value, 0)} Teams Assigned
-            </span>
-          </div>
-
-          <div className="h-64 w-full">
-            <ResponsiveContainer width="100%" height="100%">
-              <BarChart
-                data={probDistribution}
-                margin={{ top: 10, right: 10, left: -20, bottom: 20 }}
-              >
-                <XAxis
-                  dataKey="name"
-                  stroke="#64748B"
-                  fontSize={10}
-                  interval={0}
-                  angle={-15}
-                  textAnchor="end"
-                />
-                <YAxis stroke="#64748B" fontSize={10} />
-                <Tooltip
-                  contentStyle={{
-                    backgroundColor: '#0F1E2E',
-                    borderColor: 'rgba(34, 197, 94, 0.3)',
-                    borderRadius: '12px',
-                    fontSize: '11px',
-                    color: '#fff',
-                  }}
-                />
-                <Bar dataKey="value" radius={[6, 6, 0, 0]}>
-                  {probDistribution.map((_, index) => (
-                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                  ))}
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          </div>
-        </Card>
-
-        {/* Right: Real-time Hackathon Activity Feed */}
-        <Card className="p-5 flex flex-col justify-between bg-[#0F1E2E]/90 border border-emerald-500/20">
-          <div>
-            <div className="flex items-center justify-between mb-4 border-b border-slate-700/60 pb-2.5">
-              <div className="flex items-center gap-2">
-                <Activity className="w-4 h-4 text-[#22C55E]" />
-                <h3 className="text-xs font-bold font-mono uppercase tracking-wider text-white">
-                  Recent Activity
-                </h3>
-              </div>
-              <span className="w-2 h-2 rounded-full bg-[#22C55E] animate-pulse" />
-            </div>
-
-            <div className="space-y-3.5 max-h-72 overflow-y-auto pr-1">
-              {activities.map((act) => (
-                <div key={act.id} className="text-xs flex items-start gap-2.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#22C55E] shrink-0 mt-1.5" />
-                  <div className="min-w-0 flex-1">
-                    <p className="text-slate-200 font-semibold leading-tight">{act.title}</p>
-                    <p className="text-[11px] text-slate-400 mt-0.5 leading-snug">{act.description}</p>
-                    <span className="text-[10px] font-mono text-slate-500 mt-0.5 block">
-                      {act.timestamp} • by {act.actorName}
-                    </span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="pt-3 border-t border-slate-700/60 mt-3">
-            <button
-              onClick={() => navigate('/admin/teams')}
-              className="w-full flex items-center justify-center gap-1.5 text-xs text-[#22C55E] hover:text-white transition-colors cursor-pointer"
-            >
-              <span>Manage Teams Roster</span>
-              <ArrowRight className="w-3.5 h-3.5" />
-            </button>
-          </div>
-        </Card>
       </div>
     </div>
   );

@@ -1,43 +1,52 @@
 import { Evaluation } from '../types';
-import { MOCK_EVALUATIONS } from '../mock/evaluationsData';
+import { API_BASE_URL } from './apiConfig';
 import { teamService } from './teamService';
 import { evaluatorService } from './evaluatorService';
 import { leaderboardService } from './leaderboardService';
 
 class EvaluationService {
   private evaluations: Evaluation[] = [];
+  private readonly storageKey = 'gfg_evaluations_data';
 
   constructor() {
-    const cached = localStorage.getItem('gfg_evaluations_data');
+    this.load();
+  }
+
+  private load() {
+    const cached = localStorage.getItem(this.storageKey);
     if (cached) {
       try {
         this.evaluations = JSON.parse(cached);
       } catch {
-        this.evaluations = [...MOCK_EVALUATIONS];
+        this.evaluations = [];
       }
     } else {
-      this.evaluations = [...MOCK_EVALUATIONS];
-      this.persist();
+      this.evaluations = [];
     }
   }
 
   private persist() {
-    localStorage.setItem('gfg_evaluations_data', JSON.stringify(this.evaluations));
+    localStorage.setItem(this.storageKey, JSON.stringify(this.evaluations));
   }
 
   public async getAllEvaluations(): Promise<Evaluation[]> {
+    this.load();
     return [...this.evaluations];
   }
 
   public async getEvaluationsByTeam(teamId: string): Promise<Evaluation[]> {
+    this.load();
     return this.evaluations.filter((e) => e.teamId === teamId);
   }
 
   public async getEvaluationsByEvaluator(evaluatorId: string): Promise<Evaluation[]> {
-    return this.evaluations.filter((e) => e.evaluatorId === evaluatorId);
+    this.load();
+    const cleanId = evaluatorId.trim().toLowerCase();
+    return this.evaluations.filter((e) => e.evaluatorId.toLowerCase() === cleanId);
   }
 
   public async getEvaluationForTeamAndRound(teamId: string, roundId: number): Promise<Evaluation | null> {
+    this.load();
     const found = this.evaluations.find((e) => e.teamId === teamId && e.roundId === roundId);
     return found ? { ...found } : null;
   }
@@ -47,39 +56,50 @@ class EvaluationService {
     roundId: number,
     evaluatorId: string
   ): Promise<Evaluation | null> {
+    this.load();
+    const cleanId = evaluatorId.trim().toLowerCase();
     const found = this.evaluations.find(
       (evaluation) =>
         evaluation.teamId === teamId &&
         evaluation.roundId === roundId &&
-        evaluation.evaluatorId === evaluatorId
+        evaluation.evaluatorId.toLowerCase() === cleanId
     );
     return found ? { ...found } : null;
   }
 
   public async submitEvaluation(evalData: Omit<Evaluation, 'id' | 'submittedAt'>): Promise<Evaluation> {
-    const evaluator = await evaluatorService.getEvaluatorById(evalData.evaluatorId);
-    if (!evaluator || evaluator.status !== 'ACTIVE') {
-      throw new Error('Evaluator account is inactive or unavailable.');
-    }
-    if (!evaluator.assignedTeamIds.includes(evalData.teamId)) {
-      throw new Error('This team is not assigned to the current evaluator.');
-    }
-    if (!evaluator.assignedRounds.includes(evalData.roundId)) {
-      throw new Error('This round is not assigned to the current evaluator.');
-    }
-
+    this.load();
     const newEvaluation: Evaluation = {
       ...evalData,
       id: `eval-${Date.now()}`,
       submittedAt: new Date().toISOString(),
     };
 
-    // Remove any previous draft/submission for this team and round
+    // 1. Submit to backend API
+    try {
+      await fetch(`${API_BASE_URL}/evaluations/submit`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          team_id: evalData.teamId,
+          round_id: evalData.roundId,
+          scores: evalData.scores,
+          total_score: evalData.totalScore,
+          feedback: evalData.feedback || '',
+          strengths: evalData.strengths || '',
+          improvements: evalData.improvements || '',
+        }),
+      });
+    } catch {
+      // Offline fallback allowed
+    }
+
+    // 2. Save locally
     const existingIdx = this.evaluations.findIndex(
       (e) =>
         e.teamId === evalData.teamId &&
         e.roundId === evalData.roundId &&
-        e.evaluatorId === evalData.evaluatorId
+        e.evaluatorId.toLowerCase() === evalData.evaluatorId.toLowerCase()
     );
 
     if (existingIdx !== -1) {
@@ -87,18 +107,11 @@ class EvaluationService {
     } else {
       this.evaluations.push(newEvaluation);
     }
-
     this.persist();
 
-    // Propagate score to team record
-    const roundEvaluations = this.evaluations.filter(
-      (evaluation) => evaluation.teamId === evalData.teamId && evaluation.roundId === evalData.roundId
-    );
-    const averageScore = Math.round(
-      roundEvaluations.reduce((total, evaluation) => total + evaluation.totalScore, 0) /
-        roundEvaluations.length
-    );
-    await teamService.updateRoundScore(evalData.teamId, evalData.roundId, averageScore);
+    // 3. Update team round score and evaluator status
+    await teamService.updateRoundScore(evalData.teamId, evalData.roundId, evalData.totalScore);
+    await evaluatorService.markEvaluationComplete(evalData.evaluatorId);
     leaderboardService.notifySubscribers();
 
     return newEvaluation;

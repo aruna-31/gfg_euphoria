@@ -53,7 +53,7 @@ export const AdminRoundsPage: React.FC = () => {
       <div className="space-y-4">
         {rounds.map((round) => (
           <Card key={round.id} className="p-6 space-y-4">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-[#18261d] pb-3">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-xs font-mono font-bold text-[#00e575]">
@@ -73,10 +73,10 @@ export const AdminRoundsPage: React.FC = () => {
                   </Badge>
                 </div>
                 <h2 className="text-lg font-bold text-white mt-0.5">{round.title}</h2>
-                <p className="text-xs text-gray-400">{round.description}</p>
+                <p className="text-xs text-gray-400 mt-1">{round.description}</p>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 shrink-0">
                 {round.status !== 'ACTIVE' && (
                   <Button
                     size="sm"
@@ -106,36 +106,6 @@ export const AdminRoundsPage: React.FC = () => {
                     Reset to Upcoming
                   </Button>
                 )}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-[#080d0a] p-3 rounded-xl border border-[#17251c]">
-              <div className="flex items-center gap-2 text-gray-300">
-                <Clock className="w-4 h-4 text-[#00e575]" />
-                <span>Start: {new Date(round.startTime).toLocaleString()}</span>
-              </div>
-              <div className="flex items-center gap-2 text-gray-300">
-                <Calendar className="w-4 h-4 text-amber-400" />
-                <span>End: {new Date(round.endTime).toLocaleString()}</span>
-              </div>
-            </div>
-
-            <div>
-              <span className="text-xs font-mono text-gray-300 uppercase tracking-wider block mb-2 font-bold">
-                Configured Evaluation Criteria ({round.criteria.length} Dimensions)
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {round.criteria.map((c) => (
-                  <div
-                    key={c.id}
-                    className="p-2.5 bg-[#060907] border border-[#18261d] rounded-lg flex items-center justify-between text-xs"
-                  >
-                    <span className="text-gray-300 truncate mr-2">{c.name}</span>
-                    <span className="text-xs font-mono text-[#00e575] font-bold">
-                      Max {c.maxScore} pts
-                    </span>
-                  </div>
-                ))}
               </div>
             </div>
           </Card>

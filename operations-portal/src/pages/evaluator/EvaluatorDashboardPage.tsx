@@ -42,22 +42,33 @@ export const EvaluatorDashboardPage: React.FC = () => {
         problemService.getAllProblems(),
       ]);
 
-      const current = allEvaluators.find((item) => item.email.toLowerCase() === user?.email?.toLowerCase());
-      setEvaluator(current || {
-        id: user?.evaluatorId || user?.id || 'evaluator',
-        name: user?.name || 'Jury Evaluator',
-        email: user?.email || '',
-        designation: 'Evaluator',
-        organization: 'Faculty Jury Panel',
-        expertise: ['Full-Stack', 'AI/ML', 'System Design'],
-        assignedTeamIds: allTeams.slice(0, 4).map((t) => t.id),
-        assignedRounds: [1, 2],
-        completedCount: 0,
-        pendingCount: allTeams.length,
-        status: 'ACTIVE',
-      });
+      const current = allEvaluators.find(
+        (item) =>
+          item.email.toLowerCase() === user?.email?.toLowerCase() ||
+          item.id.toLowerCase() === user?.id?.toLowerCase() ||
+          item.id.toLowerCase() === user?.evaluatorId?.toLowerCase()
+      );
 
-      setAssignedTeams(allTeams);
+      const realEvaluator: Evaluator = current || {
+        id: user?.evaluatorId || user?.id || 'usr-eval-1',
+        name: user?.name || 'Nandu',
+        email: user?.email || 'nandulavanuru@gmail.com',
+        designation: 'Jury Evaluator',
+        organization: 'KARE',
+        expertise: ['Full-Stack', 'AI/ML', 'System Design'],
+        assignedTeamIds: [],
+        assignedRounds: [1, 2, 3],
+        completedCount: 0,
+        pendingCount: 0,
+        status: 'ACTIVE',
+      };
+
+      setEvaluator(realEvaluator);
+
+      // Filter ONLY teams assigned to this evaluator
+      const assigned = allTeams.filter((t) => realEvaluator.assignedTeamIds.includes(t.id));
+      setAssignedTeams(assigned);
+
       const active = allRounds.find((r) => r.status === 'ACTIVE') || allRounds[0] || null;
       setActiveRound(active);
       setProblems(new Map(allProblems.map((p) => [p.id, p.title])));

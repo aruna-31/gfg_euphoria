@@ -30,9 +30,27 @@ export const EvaluatorTeamsPage: React.FC = () => {
   const loadData = async () => {
     setLoading(true);
     try {
-      setTeams([]);
-      setActiveRound(null);
-      setProblems(new Map());
+      const [allEvaluators, allTeams, allRounds, allProblems] = await Promise.all([
+        evaluatorService.getAllEvaluators(),
+        teamService.getAllTeams(),
+        roundService.getAllRounds(),
+        problemService.getAllProblems(),
+      ]);
+
+      const current = allEvaluators.find(
+        (item) =>
+          item.email.toLowerCase() === user?.email?.toLowerCase() ||
+          item.id.toLowerCase() === user?.id?.toLowerCase() ||
+          item.id.toLowerCase() === user?.evaluatorId?.toLowerCase()
+      );
+
+      const assignedIds = current?.assignedTeamIds || [];
+      const assigned = allTeams.filter((t) => assignedIds.includes(t.id));
+      setTeams(assigned);
+
+      const active = allRounds.find((r) => r.status === 'ACTIVE') || allRounds[0] || null;
+      setActiveRound(active);
+      setProblems(new Map(allProblems.map((p) => [p.id, p.title])));
     } finally {
       setLoading(false);
     }

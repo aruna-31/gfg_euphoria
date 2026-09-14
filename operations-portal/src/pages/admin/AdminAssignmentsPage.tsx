@@ -43,9 +43,9 @@ export const AdminAssignmentsPage: React.FC = () => {
       setTeams(allTeams);
       setRounds(allRounds);
       setProblems(allProblems);
-      if (evals.length > 0) setSelectedEvalId(evals[0].id);
-      if (allTeams.length > 0) setSelectedTeamId(allTeams[0].id);
-      if (allRounds.length > 0) setSelectedRoundId(String(allRounds[0].id));
+      if (evals.length > 0) setSelectedEvalId((prev) => (prev && evals.some((e) => e.id === prev) ? prev : evals[0].id));
+      if (allTeams.length > 0) setSelectedTeamId((prev) => (prev && allTeams.some((t) => t.id === prev) ? prev : allTeams[0].id));
+      if (allRounds.length > 0) setSelectedRoundId((prev) => (prev && allRounds.some((r) => String(r.id) === prev) ? prev : String(allRounds[0].id)));
     } finally {
       setLoading(false);
     }

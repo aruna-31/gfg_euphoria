@@ -20,8 +20,10 @@ class LeaderboardService {
 
     const problemMap = new Map(problems.map((p) => [p.id, p.title]));
 
-    const scoreFor = (team: (typeof teams)[number], round: 'all' | 1 | 2 | 3) =>
-      round === 'all' ? team.totalScore : team.roundScores[round] || 0;
+    const scoreFor = (team: (typeof teams)[number], round: 'all' | 1 | 2 | 3) => {
+      if (round === 'all') return team.totalScore || 0;
+      return (team.roundScores && team.roundScores[round]) || (team.currentRound === round ? team.totalScore : 0) || 0;
+    };
 
     const previousRound = roundFilter === 'all' || roundFilter === 1
       ? 'all'
@@ -33,14 +35,14 @@ class LeaderboardService {
     );
 
     const entries: LeaderboardEntry[] = teams.map((team) => {
-      let score = team.totalScore;
+      let score = team.totalScore || 0;
       if (roundFilter !== 'all') {
-        score = team.roundScores[roundFilter] || 0;
+        score = (team.roundScores && team.roundScores[roundFilter]) || (team.currentRound === roundFilter ? team.totalScore : 0) || 0;
       }
 
       return {
         rank: 0,
-        previousRank: previousRanks.get(team.id) || team.previousRank || 0,
+        previousRank: previousRanks.get(team.id) || team.previousRank || 1,
         teamId: team.id,
         teamName: team.name,
         college: team.college,
@@ -48,8 +50,8 @@ class LeaderboardService {
         photoUrl: team.photoUrl,
         problemStatementId: team.problemStatementId,
         problemTitle: team.problemStatementId ? problemMap.get(team.problemStatementId) || 'Selected Problem' : 'Problem Pending',
-        roundScores: team.roundScores,
-        totalScore: score,
+        roundScores: team.roundScores || { 1: team.totalScore || 0 },
+        totalScore: team.totalScore || score,
         status: team.status,
       };
     });

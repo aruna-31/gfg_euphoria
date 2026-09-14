@@ -248,26 +248,10 @@ function MainApp() {
               }
             />
             <Route
-              path="/admin/import"
-              element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <CSVImportPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
               path="/admin/reports"
               element={
                 <ProtectedRoute allowedRoles={['ADMIN']}>
                   <AdminReportsPage />
-                </ProtectedRoute>
-              }
-            />
-            <Route
-              path="/admin/settings"
-              element={
-                <ProtectedRoute allowedRoles={['ADMIN']}>
-                  <AdminSettingsPage />
                 </ProtectedRoute>
               }
             />
