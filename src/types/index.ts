@@ -50,10 +50,21 @@ export interface Team {
   status: TeamStatus;
   rank?: number;
   previousRank?: number;
+  selectedAt?: string;
   createdAt: string;
 }
 
 export type DifficultyLevel = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED';
+
+export interface SelectedTeamSummary {
+  id: string;
+  name: string;
+  college: string;
+  leaderEmail: string;
+  photoUrl?: string;
+  status: string;
+  selectedAt?: string;
+}
 
 export interface ProblemStatement {
   id: string;
@@ -67,6 +78,7 @@ export interface ProblemStatement {
   evaluationFocus: string[];
   selectedByCount: number;
   maxCapacity: number;
+  selectedTeams?: SelectedTeamSummary[];
 }
 
 export type RoundStatus = 'UPCOMING' | 'ACTIVE' | 'COMPLETED';

@@ -32,6 +32,7 @@ class TeamDB(Base):
     current_round = Column(Integer, default=1)
     total_score = Column(Float, default=0.0)
     rank = Column(Integer, default=1)
+    selected_at = Column(DateTime, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     leader = relationship("UserDB", back_populates="team")

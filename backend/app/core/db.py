@@ -29,6 +29,29 @@ except Exception as e:
     db_url = 'sqlite:///./gfg_euphoria.db'
     engine = create_engine(db_url, connect_args={'check_same_thread': False})
 
+from sqlalchemy import text
+
+def ensure_schema_compatibility(db_engine):
+    try:
+        with db_engine.connect() as conn:
+            is_pg = db_engine.dialect.name == 'postgresql'
+            if is_pg:
+                try:
+                    conn.execute(text("ALTER TABLE teams ADD COLUMN IF NOT EXISTS selected_at TIMESTAMP;"))
+                    conn.commit()
+                except Exception as ex:
+                    print(f"[PG Schema notice] {ex}")
+            else:
+                try:
+                    conn.execute(text("ALTER TABLE teams ADD COLUMN selected_at DATETIME;"))
+                    conn.commit()
+                except Exception:
+                    pass
+    except Exception as e:
+        print(f"[Schema check notice] {e}")
+
+ensure_schema_compatibility(engine)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 

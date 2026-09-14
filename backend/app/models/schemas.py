@@ -53,6 +53,7 @@ class TeamSchema(BaseModel):
     currentRound: int = 1
     totalScore: float = 0.0
     status: str = "REGISTERED"
+    selectedAt: Optional[str] = None
     rank: int = 1
 
     class Config:
@@ -69,6 +70,7 @@ class ProblemStatementSchema(BaseModel):
     problemOwner: str
     maxCapacity: int = 3
     selectedByCount: int = 0
+    selectedTeams: List[Dict[str, Any]] = []
     deliverables: List[str] = []
     evaluationFocus: List[str] = []
 
