@@ -166,27 +166,36 @@ class AuthService {
         body: JSON.stringify({ email: cleanEmail, password }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const user: User = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: 'LEADER',
-          college: data.user.college,
-          teamId: data.user.teamId,
-        };
-
-        localStorage.setItem(this.tokenKey, data.access_token);
-        localStorage.setItem(this.userKey, JSON.stringify(user));
-        this.currentUser = user;
-        return user;
+      if (!res.ok) {
+        let errorDetail = 'Authentication failed. Verify your registered Team Leader email and password.';
+        try {
+          const errData = await res.json();
+          if (errData && errData.detail) {
+            errorDetail = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
+          }
+        } catch {
+          // ignore json parse error
+        }
+        throw new Error(errorDetail);
       }
+
+      const data = await res.json();
+      const user: User = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: 'LEADER',
+        college: data.user.college,
+        teamId: data.user.teamId,
+      };
+
+      localStorage.setItem(this.tokenKey, data.access_token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.currentUser = user;
+      return user;
     } catch (err: unknown) {
       throw err instanceof Error ? err : new Error('Team Leader login failed.');
     }
-
-    throw new Error('Authentication failed. Verify your registered Team Leader email and password.');
   }
 
   public async login(email: string, password: string): Promise<User> {
@@ -203,27 +212,36 @@ class AuthService {
         body: JSON.stringify({ email: cleanEmail, password }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const user: User = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: 'EVALUATOR',
-          college: data.user.college,
-          evaluatorId: data.user.id,
-        };
-
-        localStorage.setItem(this.tokenKey, data.access_token);
-        localStorage.setItem(this.userKey, JSON.stringify(user));
-        this.currentUser = user;
-        return user;
+      if (!res.ok) {
+        let errorDetail = 'Authentication failed. Verify your evaluator email and password.';
+        try {
+          const errData = await res.json();
+          if (errData && errData.detail) {
+            errorDetail = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
+          }
+        } catch {
+          // ignore json parse error
+        }
+        throw new Error(errorDetail);
       }
+
+      const data = await res.json();
+      const user: User = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: 'EVALUATOR',
+        college: data.user.college,
+        evaluatorId: data.user.id,
+      };
+
+      localStorage.setItem(this.tokenKey, data.access_token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.currentUser = user;
+      return user;
     } catch (err: unknown) {
       throw err instanceof Error ? err : new Error('Evaluator login failed.');
     }
-
-    throw new Error('Authentication failed. Verify your evaluator email and password.');
   }
 
   public async loginAsAdmin(email: string, password: string): Promise<User> {
@@ -236,26 +254,35 @@ class AuthService {
         body: JSON.stringify({ email: cleanEmail, password }),
       });
 
-      if (res.ok) {
-        const data = await res.json();
-        const user: User = {
-          id: data.user.id,
-          name: data.user.name,
-          email: data.user.email,
-          role: 'ADMIN',
-          college: data.user.college,
-        };
-
-        localStorage.setItem(this.tokenKey, data.access_token);
-        localStorage.setItem(this.userKey, JSON.stringify(user));
-        this.currentUser = user;
-        return user;
+      if (!res.ok) {
+        let errorDetail = 'Authentication failed. Verify your administrator email and password.';
+        try {
+          const errData = await res.json();
+          if (errData && errData.detail) {
+            errorDetail = typeof errData.detail === 'string' ? errData.detail : JSON.stringify(errData.detail);
+          }
+        } catch {
+          // ignore json parse error
+        }
+        throw new Error(errorDetail);
       }
+
+      const data = await res.json();
+      const user: User = {
+        id: data.user.id,
+        name: data.user.name,
+        email: data.user.email,
+        role: 'ADMIN',
+        college: data.user.college,
+      };
+
+      localStorage.setItem(this.tokenKey, data.access_token);
+      localStorage.setItem(this.userKey, JSON.stringify(user));
+      this.currentUser = user;
+      return user;
     } catch (err: unknown) {
       throw err instanceof Error ? err : new Error('Administrator login failed.');
     }
-
-    throw new Error('Authentication failed. Verify your administrator email and password.');
   }
 
   public logout(): void {
