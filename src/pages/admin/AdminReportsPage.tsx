@@ -23,9 +23,15 @@ export const AdminReportsPage: React.FC = () => {
     setDownloadingReport('marksheet');
     try {
       const csv = await reportService.exportMarksheetCSV();
+      if (!csv) {
+        throw new Error('No data found to export');
+      }
       reportService.downloadFile(`gfg_euphoria_master_marksheet_${Date.now()}.csv`, csv);
       playSuccess();
       addToast('SUCCESS', 'Downloaded official Hackathon Evaluation Marksheet.');
+    } catch (err) {
+      console.error('Marksheet export failed:', err);
+      addToast('ALERT', 'Failed to generate marksheet. Please check connectivity and retry.');
     } finally {
       setDownloadingReport(null);
     }
@@ -35,9 +41,15 @@ export const AdminReportsPage: React.FC = () => {
     setDownloadingReport('teams');
     try {
       const csv = await reportService.exportTeamsCSV();
+      if (!csv) {
+        throw new Error('No teams data found to export');
+      }
       reportService.downloadFile(`gfg_euphoria_teams_roster_${Date.now()}.csv`, csv);
       playSuccess();
       addToast('SUCCESS', 'Downloaded registered Teams Roster CSV.');
+    } catch (err) {
+      console.error('Teams export failed:', err);
+      addToast('ALERT', 'Failed to export teams roster.');
     } finally {
       setDownloadingReport(null);
     }
@@ -47,9 +59,15 @@ export const AdminReportsPage: React.FC = () => {
     setDownloadingReport('participants');
     try {
       const csv = await reportService.exportParticipantsCSV();
+      if (!csv) {
+        throw new Error('No participants data found to export');
+      }
       reportService.downloadFile(`gfg_euphoria_participants_roster_${Date.now()}.csv`, csv);
       playSuccess();
       addToast('SUCCESS', 'Downloaded complete Participants Registry CSV.');
+    } catch (err) {
+      console.error('Participants export failed:', err);
+      addToast('ALERT', 'Failed to export participants registry.');
     } finally {
       setDownloadingReport(null);
     }
