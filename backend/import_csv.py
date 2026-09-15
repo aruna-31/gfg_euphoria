@@ -77,7 +77,7 @@ def import_team_leaders(csv_path: str):
 
                 user_id = f"usr-ldr-{team_id}"
 
-                # 1. Upsert User
+                # 1. Upsert User if missing
                 existing_user = db.query(UserDB).filter(UserDB.email == leader_email).first()
                 if not existing_user:
                     user = UserDB(
@@ -93,22 +93,20 @@ def import_team_leaders(csv_path: str):
                     db.flush()
                 else:
                     user = existing_user
-                    user.hashed_password = get_password_hash(leader_pass)
-                    user.name = leader_name
-                    user.college = college
-                    if leader_phone:
-                        user.phone = leader_phone
-                    db.flush()
-                    user_id = user.id
 
-                # 2. Upsert Team
-                existing_team = db.query(TeamDB).filter((TeamDB.id == team_id) | (TeamDB.leader_id == user_id) | (TeamDB.leader_email == leader_email)).first()
+                # 2. Upsert Team if missing
+                existing_team = db.query(TeamDB).filter(
+                    (TeamDB.id == team_id) | 
+                    (TeamDB.leader_id == user.id) | 
+                    (TeamDB.leader_email == leader_email)
+                ).first()
+
                 if not existing_team:
                     team = TeamDB(
                         id=team_id,
                         name=team_name,
                         college=college,
-                        leader_id=user_id,
+                        leader_id=user.id,
                         leader_email=leader_email,
                         problem_statement_id=None,
                         status="REGISTERED",
@@ -119,50 +117,44 @@ def import_team_leaders(csv_path: str):
                     db.flush()
                 else:
                     team = existing_team
-                    team.name = team_name
-                    team.college = college
-                    team.leader_email = leader_email
-                    team.leader_id = user_id
-                    db.flush()
 
-                # 3. Clear existing members for this team to re-sync cleanly
-                db.query(TeamMemberDB).filter(TeamMemberDB.team_id == team.id).delete()
-
-                # Add leader member
-                m1 = TeamMemberDB(
-                    id=f"m-{team.id}-leader",
-                    team_id=team.id,
-                    name=leader_name,
-                    email=leader_email,
-                    college=college,
-                    role_in_team="Team Leader",
-                    is_leader=True
-                )
-                db.add(m1)
-
-                # Support squad members from columns:
-                # "team member 1", "team member 2", "team member 3"
-                for m_idx in range(1, 6):
-                    m_val = (
-                        row_map.get(f"team member {m_idx}") or
-                        row_map.get(f"team member_{m_idx}") or
-                        row_map.get(f"teammember{m_idx}") or
-                        row_map.get(f"member {m_idx} name") or 
-                        row_map.get(f"member{m_idx}_name") or 
-                        row_map.get(f"member {m_idx}")
+                # 3. Seed members ONLY if team currently has NO members
+                existing_member_count = db.query(TeamMemberDB).filter(TeamMemberDB.team_id == team.id).count()
+                if existing_member_count == 0:
+                    # Add leader member
+                    m1 = TeamMemberDB(
+                        id=f"m-{team.id}-leader",
+                        team_id=team.id,
+                        name=leader_name,
+                        email=leader_email,
+                        college=college,
+                        role_in_team="Team Leader",
+                        is_leader=True
                     )
-                    if m_val and m_val.strip().lower() != leader_name.strip().lower():
-                        # Do NOT generate or store dummy emails for other squad members
-                        mem_db = TeamMemberDB(
-                            id=f"m-{team.id}-{m_idx}",
-                            team_id=team.id,
-                            name=m_val.strip(),
-                            email="", # No email for squad members per hackathon single-identity rules
-                            college=college,
-                            role_in_team=f"Member {m_idx}",
-                            is_leader=False
+                    db.add(m1)
+
+                    # Support squad members from columns:
+                    # "team member 1", "team member 2", "team member 3"
+                    for m_idx in range(1, 6):
+                        m_val = (
+                            row_map.get(f"team member {m_idx}") or
+                            row_map.get(f"team member_{m_idx}") or
+                            row_map.get(f"teammember{m_idx}") or
+                            row_map.get(f"member {m_idx} name") or 
+                            row_map.get(f"member{m_idx}_name") or 
+                            row_map.get(f"member {m_idx}")
                         )
-                        db.add(mem_db)
+                        if m_val and m_val.strip().lower() != leader_name.strip().lower():
+                            mem_db = TeamMemberDB(
+                                id=f"m-{team.id}-{m_idx}",
+                                team_id=team.id,
+                                name=m_val.strip(),
+                                email="",
+                                college=college,
+                                role_in_team=f"Member {m_idx}",
+                                is_leader=False
+                            )
+                            db.add(mem_db)
 
             db.commit()
             print(f"Successfully processed {count} Team Leaders & Teams.")
@@ -205,12 +197,6 @@ def import_evaluators(csv_path: str):
                     )
                     db.add(user)
                     count += 1
-                else:
-                    existing.hashed_password = get_password_hash(password)
-                    existing.name = name
-                    existing.role = "EVALUATOR"
-                    existing.college = college
-                    count += 1
             db.commit()
             print(f"Successfully processed {count} Evaluators.")
     finally:
@@ -251,12 +237,6 @@ def import_admins(csv_path: str):
                         college=college
                     )
                     db.add(user)
-                    count += 1
-                else:
-                    existing.hashed_password = get_password_hash(password)
-                    existing.name = name
-                    existing.role = "ADMIN"
-                    existing.college = college
                     count += 1
             db.commit()
             print(f"Successfully processed {count} Admins.")

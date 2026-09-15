@@ -1,12 +1,13 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.config import settings
-from app.core.db import engine, Base
+from app.core.db import engine, Base, get_db_info
 from app.api.v1 import auth, teams, problems, evaluations, rounds
 
-# Initialize DB tables on startup
+# Initialize DB tables in Supabase PostgreSQL
 try:
     Base.metadata.create_all(bind=engine)
+    print("[DB Tables] Successfully verified/created all database tables in PostgreSQL schema.")
 except Exception as e:
     print(f"[DB Init Warning] Table creation warning: {e}")
 
@@ -21,12 +22,12 @@ def on_startup():
         from seed import seed_database
         seed_database()
     except Exception as e:
-        print(f"[Seed Notice] Startup seed skipped or already applied: {e}")
+        print(f"[Seed Notice] Startup seed notice: {e}")
 
 # Set up CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for dev
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -47,3 +48,9 @@ def root():
         "docs": "/docs",
         "api_v1": settings.API_V1_STR
     }
+
+@app.get("/health/db")
+@app.get(f"{settings.API_V1_STR}/health/db")
+def health_db():
+    """Returns the connected PostgreSQL database host, engine, schema, and tables."""
+    return get_db_info()

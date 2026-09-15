@@ -67,13 +67,6 @@ def import_problem_statements(csv_file_path: str = None):
                         evaluation_focus=exp_list
                     )
                     db.add(new_prob)
-                else:
-                    existing.title = title
-                    existing.short_description = desc[:220] + "..." if len(desc) > 220 else desc
-                    existing.full_description = desc
-                    existing.category = category
-                    existing.deliverables = req_list
-                    existing.evaluation_focus = exp_list
                 
                 count += 1
 
