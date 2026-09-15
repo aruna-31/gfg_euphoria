@@ -17,10 +17,7 @@ export const MOCK_ROUNDS: Round[] = [
       'Demonstrate your project repository and commit structure.',
     ],
     criteria: [
-      { id: 'crit-1', title: 'Problem Understanding & Novelty', name: 'Problem Understanding & Novelty', description: 'Grasp of the problem domain and original angle', maxScore: 25 },
-      { id: 'crit-2', title: 'System Architecture & Schema', name: 'System Architecture & Schema', description: 'Robustness of design and modularity', maxScore: 25 },
-      { id: 'crit-3', title: 'Technical Feasibility', name: 'Technical Feasibility', description: 'Realistic execution capability within time limits', maxScore: 25 },
-      { id: 'crit-4', title: 'Presentation & Q&A', name: 'Presentation & Q&A', description: 'Clarity of pitch and technical defense', maxScore: 25 },
+      { id: 'crit-round-1', title: 'Round 1 Evaluation Score', name: 'Round 1 Evaluation Score', description: 'Overall assessment of problem understanding, architecture, feasibility, and repository setup.', maxScore: 100 },
     ],
   },
   {
@@ -39,10 +36,7 @@ export const MOCK_ROUNDS: Round[] = [
       'Highlight error boundaries, edge cases, and test suites.',
     ],
     criteria: [
-      { id: 'crit-5', title: 'Working Prototype Execution', name: 'Working Prototype Execution', description: 'Functional core user journey without simulation', maxScore: 30 },
-      { id: 'crit-6', title: 'Engineering & Code Quality', name: 'Engineering & Code Quality', description: 'Architecture, clean code, and repository hygiene', maxScore: 25 },
-      { id: 'crit-7', title: 'UI / UX Design & Accessibility', name: 'UI / UX Design & Accessibility', description: 'Responsive frontend experience and user intuition', maxScore: 25 },
-      { id: 'crit-8', title: 'Progress Velocity & Team Synergy', name: 'Progress Velocity & Team Synergy', description: 'Milestone completion rate from Round 1', maxScore: 20 },
+      { id: 'crit-round-2', title: 'Round 2 Evaluation Score', name: 'Round 2 Evaluation Score', description: 'Overall assessment of functional prototype execution, engineering quality, UI/UX polish, and jury Q&A.', maxScore: 100 },
     ],
   },
   {
@@ -61,10 +55,7 @@ export const MOCK_ROUNDS: Round[] = [
       'Present cost of operations and future roadmap.',
     ],
     criteria: [
-      { id: 'crit-9', title: 'Complete Product & Polish', name: 'Complete Product & Polish', description: 'Deployable solution ready for real users', maxScore: 30 },
-      { id: 'crit-10', title: 'Innovation & Impact', name: 'Innovation & Impact', description: 'Measurable societal or industrial value', maxScore: 30 },
-      { id: 'crit-11', title: 'Security & Scalability', name: 'Security & Scalability', description: 'Production hardening, auth, and fault tolerance', maxScore: 20 },
-      { id: 'crit-12', title: 'Grand Pitch & Defense', name: 'Grand Pitch & Defense', description: 'Storytelling, delivery, and jury engagement', maxScore: 20 },
+      { id: 'crit-round-3', title: 'Round 3 Evaluation Score', name: 'Round 3 Evaluation Score', description: 'Overall assessment of complete product polish, impact, security, scalability, and grand pitch delivery.', maxScore: 100 },
     ],
   },
 ];

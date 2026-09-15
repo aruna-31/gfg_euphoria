@@ -38,9 +38,25 @@ class RoundService {
             status: r.status as RoundStatus,
             startTime: r.startTime || r.start_time || new Date().toISOString(),
             endTime: r.endTime || r.end_time || new Date().toISOString(),
-            maxScore: r.maxScore || r.max_score || 100,
+            maxScore: Number(r.maxScore || r.max_score) || 100,
             instructions: r.instructions || [],
-            criteria: r.criteria || [],
+            criteria: Array.isArray(r.criteria) && r.criteria.length > 0
+              ? r.criteria.map((c: any) => ({
+                  id: c.id || `crit-${r.id}`,
+                  title: c.title || c.name || 'Overall Evaluation Score',
+                  name: c.name || c.title || 'Overall Evaluation Score',
+                  maxScore: Number(c.maxScore ?? c.maxPoints ?? c.max_score) || 100,
+                  description: c.description || 'Evaluation score for this checkpoint.',
+                }))
+              : [
+                  {
+                    id: `crit-${r.id}`,
+                    title: 'Overall Evaluation Score',
+                    name: 'Overall Evaluation Score',
+                    maxScore: Number(r.maxScore || r.max_score) || 100,
+                    description: 'Comprehensive evaluation score for this checkpoint.',
+                  },
+                ],
           }));
           this.persist();
         }

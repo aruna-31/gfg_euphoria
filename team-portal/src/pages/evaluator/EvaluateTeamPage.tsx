@@ -7,7 +7,7 @@ import { teamService } from '../../services/teamService';
 import { problemService } from '../../services/problemService';
 import { roundService } from '../../services/roundService';
 import { evaluationService } from '../../services/evaluationService';
-import { Team, ProblemStatement, Round, EvaluationCriterion } from '../../types';
+import { Team, ProblemStatement, Round } from '../../types';
 import { Card } from '../../components/ui/Card';
 import { Button } from '../../components/ui/Button';
 import { Badge } from '../../components/ui/Badge';
@@ -21,6 +21,8 @@ import {
   FileCode2,
   Send,
   Building,
+  Plus,
+  Minus,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 
@@ -36,8 +38,9 @@ export const EvaluateTeamPage: React.FC = () => {
   const [round, setRound] = useState<Round | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Form states
-  const [scores, setScores] = useState<Record<string, number>>({});
+  // Single Dimension Score State
+  const [score, setScore] = useState<number>(85);
+  const [rawInput, setRawInput] = useState<string>('85');
   const [feedback, setFeedback] = useState('');
   const [strengths, setStrengths] = useState('');
   const [improvements, setImprovements] = useState('');
@@ -77,10 +80,7 @@ export const EvaluateTeamPage: React.FC = () => {
         maxScore: 100,
         instructions: ['Review architecture', 'Test prototype live'],
         criteria: [
-          { id: 'crit-1', title: 'Technical Innovation & Architecture', name: 'Technical Innovation & Architecture', maxScore: 30, description: 'Code structure, design pattern, and feasibility.' },
-          { id: 'crit-2', title: 'UI / UX & Accessibility', name: 'UI / UX & Accessibility', maxScore: 25, description: 'Visual hierarchy, responsiveness, and usability.' },
-          { id: 'crit-3', title: 'Completeness & Deliverables', name: 'Completeness & Deliverables', maxScore: 25, description: 'Adherence to stated challenge requirements.' },
-          { id: 'crit-4', title: 'Presentation & Q&A Defense', name: 'Presentation & Q&A Defense', maxScore: 20, description: 'Clarity of jury defense and question handling.' },
+          { id: 'crit-1', title: 'Round 1 Evaluation Score', name: 'Round 1 Evaluation Score', maxScore: 100, description: 'Consolidated jury score' },
         ],
       };
 
@@ -100,33 +100,80 @@ export const EvaluateTeamPage: React.FC = () => {
       );
 
       if (existing) {
-        setScores(existing.scores);
+        let loadedScore = 85;
+        if (typeof existing.totalScore === 'number' && !isNaN(existing.totalScore)) {
+          loadedScore = existing.totalScore;
+        } else if (existing.scores && Object.keys(existing.scores).length > 0) {
+          const firstVal = Number(Object.values(existing.scores)[0]);
+          if (!isNaN(firstVal)) {
+            loadedScore = firstVal;
+          }
+        }
+        setScore(loadedScore);
+        setRawInput(String(loadedScore));
         setFeedback(existing.feedback || '');
         setStrengths(existing.strengths || '');
         setImprovements(existing.improvements || '');
       } else {
-        const initialScores: Record<string, number> = {};
-        active.criteria.forEach((c) => {
-          initialScores[c.id] = Math.round(c.maxScore * 0.85);
-        });
-        setScores(initialScores);
+        setScore(85);
+        setRawInput('85');
       }
     } finally {
       setLoading(false);
     }
   };
 
-  const handleScoreChange = (critId: string, val: number, maxVal: number) => {
-    const clamped = Math.max(0, Math.min(maxVal, isNaN(val) ? 0 : val));
-    setScores((prev) => ({ ...prev, [critId]: clamped }));
+  const maxScore = round?.maxScore ? Number(round.maxScore) : 100;
+
+  const handleScoreInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const valStr = e.target.value;
+    setRawInput(valStr);
+
+    if (valStr === '') {
+      setScore(0);
+      return;
+    }
+
+    const parsed = parseInt(valStr, 10);
+    if (!isNaN(parsed)) {
+      const clamped = Math.max(0, Math.min(maxScore, parsed));
+      setScore(clamped);
+    }
   };
 
-  const totalCalculatedScore = Object.values(scores).reduce((a, b) => a + b, 0);
+  const handleScoreBlur = () => {
+    if (rawInput === '' || isNaN(parseInt(rawInput, 10))) {
+      setRawInput(String(score));
+    } else {
+      const clamped = Math.max(0, Math.min(maxScore, parseInt(rawInput, 10)));
+      setScore(clamped);
+      setRawInput(String(clamped));
+    }
+  };
 
-  const getTierLabel = (score: number) => {
-    if (score >= 90) return { label: 'OUTSTANDING / PODIUM CONTENDER', color: 'text-[#22C55E]' };
-    if (score >= 80) return { label: 'VERY STRONG / EXCELLENT', color: 'text-cyan-400' };
-    if (score >= 70) return { label: 'GOOD PROTOTYPE', color: 'text-amber-400' };
+  const handleSliderChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const parsed = parseInt(e.target.value, 10);
+    const clamped = Math.max(0, Math.min(maxScore, isNaN(parsed) ? 0 : parsed));
+    setScore(clamped);
+    setRawInput(String(clamped));
+  };
+
+  const adjustScore = (delta: number) => {
+    const newScore = Math.max(0, Math.min(maxScore, score + delta));
+    setScore(newScore);
+    setRawInput(String(newScore));
+  };
+
+  const setPresetScore = (val: number) => {
+    const clamped = Math.max(0, Math.min(maxScore, val));
+    setScore(clamped);
+    setRawInput(String(clamped));
+  };
+
+  const getTierLabel = (s: number) => {
+    if (s >= 90) return { label: 'OUTSTANDING / PODIUM CONTENDER', color: 'text-[#22C55E]' };
+    if (s >= 80) return { label: 'VERY STRONG / EXCELLENT', color: 'text-cyan-400' };
+    if (s >= 70) return { label: 'GOOD PROTOTYPE', color: 'text-amber-400' };
     return { label: 'NEEDS SUBSTANTIAL ITERATION', color: 'text-rose-400' };
   };
 
@@ -142,12 +189,13 @@ export const EvaluateTeamPage: React.FC = () => {
 
     setIsSubmitting(true);
     try {
+      const scoreKey = round.criteria?.[0]?.id || `crit-${round.id}`;
       await evaluationService.submitEvaluation({
         roundId: round.id,
         teamId: team.id,
         evaluatorId: user.evaluatorId || user.id || 'eval-1',
-        scores,
-        totalScore: totalCalculatedScore,
+        scores: { [scoreKey]: score, overall: score },
+        totalScore: score,
         feedback,
         strengths,
         improvements,
@@ -205,7 +253,7 @@ export const EvaluateTeamPage: React.FC = () => {
         </div>
         <h2 className="text-2xl font-bold text-white">Evaluation Official & Recorded!</h2>
         <p className="text-xs text-slate-300 max-w-md mx-auto">
-          The score of <strong className="text-[#22C55E] font-mono">{totalCalculatedScore}/100</strong> for{' '}
+          The score of <strong className="text-[#22C55E] font-mono">{score}/{maxScore}</strong> for{' '}
           <strong className="text-white">{team.name}</strong> in {round.name} has been published to the master evaluation database.
         </p>
 
@@ -221,7 +269,7 @@ export const EvaluateTeamPage: React.FC = () => {
     );
   }
 
-  const tier = getTierLabel(totalCalculatedScore);
+  const tier = getTierLabel(score);
 
   return (
     <div className="space-y-6 text-left max-w-4xl mx-auto">
@@ -262,9 +310,9 @@ export const EvaluateTeamPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="bg-[#0B1520] p-3 rounded-xl border border-emerald-500/20 text-right">
-            <span className="text-[10px] font-mono text-slate-400 uppercase block">Total Live Tally</span>
-            <span className="text-2xl font-mono font-bold text-[#22C55E]">{totalCalculatedScore} / 100</span>
+          <div className="bg-[#0B1520] p-3 rounded-xl border border-emerald-500/20 text-right min-w-[140px]">
+            <span className="text-[10px] font-mono text-slate-400 uppercase block">Live Score</span>
+            <span className="text-2xl font-mono font-bold text-[#22C55E]">{score} / {maxScore}</span>
           </div>
         </div>
 
@@ -283,55 +331,106 @@ export const EvaluateTeamPage: React.FC = () => {
         )}
       </Card>
 
-      {/* Multi-Criteria Scoring Rubric */}
+      {/* Single Dimension Evaluation Scoring Card */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold uppercase tracking-wider font-mono text-white flex items-center gap-2">
             <Award className="w-4 h-4 text-[#22C55E]" />
-            Official Evaluation Rubric ({round.criteria.length} Dimensions)
+            Official Evaluation Score
           </h2>
-          <span className="text-[11px] font-mono text-slate-400">Sum of criteria max = 100</span>
+          <span className="text-[11px] font-mono text-slate-400">Total Max Marks = {maxScore}</span>
         </div>
 
-        <div className="space-y-3">
-          {round.criteria.map((criterion: EvaluationCriterion) => {
-            const currentScore = scores[criterion.id] ?? 0;
+        <Card className="p-6 bg-[#0F1E2E]/90 border border-emerald-500/30 shadow-2xl space-y-5">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                <span>Overall Evaluation Score</span>
+                <Badge variant="gfg" size="sm">Max {maxScore}</Badge>
+              </h3>
+              <p className="text-xs text-slate-300 mt-1">
+                Consolidated score assessing technical novelty, architecture, prototype completeness, and live presentation.
+              </p>
+            </div>
 
-            return (
-              <Card key={criterion.id} className="p-4 bg-[#0F1E2E]/90 border border-emerald-500/20">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-2">
-                  <div>
-                    <h3 className="text-xs font-bold text-white flex items-center gap-1.5">
-                      <span>{criterion.name}</span>
-                      <span className="text-[10px] font-mono text-slate-400">(Max {criterion.maxScore})</span>
-                    </h3>
-                    <p className="text-[11px] text-slate-300 mt-0.5">{criterion.description}</p>
-                  </div>
+            {/* Score Input Box with Steppers */}
+            <div className="flex items-center gap-2 shrink-0 bg-[#0B1520] p-2 rounded-xl border border-emerald-500/40">
+              <button
+                type="button"
+                onClick={() => adjustScore(-5)}
+                aria-label="Decrease score by 5"
+                className="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-800/50 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <Minus className="w-4 h-4" />
+              </button>
 
-                  <div className="flex items-center gap-2 shrink-0">
-                    <label htmlFor={`score-${criterion.id}`} className="text-[10px] font-mono uppercase tracking-wider text-slate-400">
-                      Enter score
-                    </label>
-                    <input
-                      id={`score-${criterion.id}`}
-                      type="number"
-                      min={0}
-                      max={criterion.maxScore}
-                      step={1}
-                      value={currentScore}
-                      onChange={(e) =>
-                        handleScoreChange(criterion.id, parseInt(e.target.value, 10), criterion.maxScore)
-                      }
-                      aria-label={`${criterion.name} score out of ${criterion.maxScore}`}
-                      className="w-20 bg-[#0B1520] border border-emerald-500/40 rounded-lg px-2.5 py-2 text-center font-mono font-bold text-base text-[#22C55E] focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/20"
-                    />
-                    <span className="text-xs font-mono text-slate-400">/ {criterion.maxScore}</span>
-                  </div>
-                </div>
-              </Card>
-            );
-          })}
-        </div>
+              <div className="flex items-center gap-1.5 px-2">
+                <input
+                  id="evaluation-score-input"
+                  type="number"
+                  min={0}
+                  max={maxScore}
+                  step={1}
+                  value={rawInput}
+                  onChange={handleScoreInputChange}
+                  onBlur={handleScoreBlur}
+                  aria-label={`Evaluation score out of ${maxScore}`}
+                  className="w-20 bg-[#070e14] border border-emerald-500/50 rounded-lg px-2 py-1.5 text-center font-mono font-black text-2xl text-[#22C55E] focus:outline-none focus:border-emerald-400 focus:ring-2 focus:ring-emerald-500/30 shadow-inner"
+                />
+                <span className="text-sm font-mono font-bold text-slate-400">/ {maxScore}</span>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => adjustScore(5)}
+                aria-label="Increase score by 5"
+                className="w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-800/50 flex items-center justify-center transition-colors cursor-pointer"
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Interactive Range Slider */}
+          <div className="space-y-2 pt-2">
+            <div className="flex justify-between text-[11px] font-mono text-slate-400">
+              <span>0 (Minimum)</span>
+              <span className="text-emerald-400 font-bold">{score} / {maxScore}</span>
+              <span>{maxScore} (Perfect)</span>
+            </div>
+            <input
+              type="range"
+              min={0}
+              max={maxScore}
+              step={1}
+              value={score}
+              onChange={handleSliderChange}
+              aria-label="Score slider"
+              className="w-full h-2.5 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-[#22C55E]"
+            />
+          </div>
+
+          {/* Quick Score Preset Buttons */}
+          <div className="pt-2 border-t border-slate-700/50 flex flex-wrap items-center gap-2">
+            <span className="text-[10px] font-mono text-slate-400 uppercase tracking-wider mr-1">
+              Quick Presets:
+            </span>
+            {[50, 60, 70, 75, 80, 85, 90, 95, 100].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                onClick={() => setPresetScore(preset)}
+                className={`px-2.5 py-1 text-xs font-mono font-semibold rounded-lg border transition-all cursor-pointer ${
+                  score === preset
+                    ? 'bg-emerald-500 text-slate-950 border-emerald-400 shadow-md shadow-emerald-500/20 font-bold'
+                    : 'bg-[#0B1520] text-slate-300 border-slate-700 hover:border-emerald-500/50 hover:text-white'
+                }`}
+              >
+                {preset}
+              </button>
+            ))}
+          </div>
+        </Card>
       </div>
 
       {/* Qualitative Feedback Textareas */}
@@ -388,7 +487,7 @@ export const EvaluateTeamPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold text-slate-300">Total Awarded Score:</span>
             <span className="text-2xl font-mono font-black text-[#22C55E]">
-              {totalCalculatedScore} / 100
+              {score} / {maxScore}
             </span>
           </div>
           <span className={`text-[11px] font-mono font-semibold ${tier.color}`}>
@@ -429,9 +528,9 @@ export const EvaluateTeamPage: React.FC = () => {
                 <span className="font-mono text-emerald-400">Round {round.number}</span>
               </div>
               <div className="flex justify-between text-xs">
-                <span className="text-slate-400">Final Computed Score:</span>
+                <span className="text-slate-400">Official Score:</span>
                 <span className="font-mono font-bold text-[#22C55E] text-base">
-                  {totalCalculatedScore} / 100
+                  {score} / {maxScore}
                 </span>
               </div>
             </div>

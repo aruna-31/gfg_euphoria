@@ -33,10 +33,7 @@ def seed_database():
                     max_score=100,
                     instructions=["Public GitHub repo link committed", "System architecture diagram uploaded", "10-slide slide deck submitted"],
                     criteria=[
-                        {"id": "c1", "name": "Problem Novelty & Approach", "maxPoints": 25, "weight": 0.25, "description": "Originality of technical solution"},
-                        {"id": "c2", "name": "System Architecture & Design", "maxPoints": 25, "weight": 0.25, "description": "Clarity of component separation and data flow"},
-                        {"id": "c3", "name": "Tech Stack Feasibility", "maxPoints": 25, "weight": 0.25, "description": "Appropriateness of selected frameworks"},
-                        {"id": "c4", "name": "Initial Repo Setup & Commits", "maxPoints": 25, "weight": 0.25, "description": "Clean project directory structure and README"}
+                        {"id": "c1", "name": "Round 1 Evaluation Score", "maxScore": 100, "description": "Overall problem understanding, technical feasibility, and blueprint quality"}
                     ]
                 ),
                 RoundDB(
@@ -50,10 +47,7 @@ def seed_database():
                     max_score=100,
                     instructions=["Working live demo URL or local host execution", "REST API integration verified", "Database connectivity verified", "Verified team group photo uploaded"],
                     criteria=[
-                        {"id": "c5", "name": "Functional Feature Completeness", "maxPoints": 30, "weight": 0.30, "description": "Working end-to-end execution of primary user stories"},
-                        {"id": "c6", "name": "Code Quality & Clean Architecture", "maxPoints": 25, "weight": 0.25, "description": "Modularity, error handling, clean design patterns"},
-                        {"id": "c7", "name": "UI/UX Visual Excellence", "maxPoints": 25, "weight": 0.25, "description": "High aesthetic polish, micro-animations, sleek GFG green and glassmorphism styling"},
-                        {"id": "c8", "name": "Live Jury Q&A Performance", "maxPoints": 20, "weight": 0.20, "description": "Ability to justify technical choices during live evaluation"}
+                        {"id": "c2", "name": "Round 2 Evaluation Score", "maxScore": 100, "description": "Overall functional prototype execution, engineering quality, and UI/UX"}
                     ]
                 ),
                 RoundDB(
@@ -67,9 +61,7 @@ def seed_database():
                     max_score=100,
                     instructions=["5-minute live stage pitch", "3-minute live stress test execution", "Executive Q&A round"],
                     criteria=[
-                        {"id": "c9", "name": "Product Impact & Viability", "maxPoints": 35, "weight": 0.35, "description": "Potential for real-world deployment and scalability"},
-                        {"id": "c10", "name": "Technical Depth & Complexity", "maxPoints": 35, "weight": 0.35, "description": "Sophistication of AI/Web3/System engineering"},
-                        {"id": "c11", "name": "Stage Presentation & Pitching", "maxPoints": 30, "weight": 0.30, "description": "Clarity, confidence, and visual presentation quality"}
+                        {"id": "c3", "name": "Grand Finale Score", "maxScore": 100, "description": "Overall product polish, scalability, impact, and stage presentation"}
                     ]
                 )
             ]
