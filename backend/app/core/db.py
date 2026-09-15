@@ -97,10 +97,10 @@ def get_db_info():
             pg_version = db_res[2] if db_res else "PostgreSQL"
 
             # Fetch table count in public schema
-            tables_res = conn.execute(text(
-                "SELECT table_name FROM information_schema.tables WHERE table_schema = :schema;",
+            tables_res = conn.execute(
+                text("SELECT table_name FROM information_schema.tables WHERE table_schema = :schema ORDER BY table_name;"),
                 {"schema": current_schema}
-            )).fetchall()
+            ).fetchall()
             table_names = [r[0] for r in tables_res]
 
             return {
